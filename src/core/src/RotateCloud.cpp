@@ -8,15 +8,18 @@ RotateCloud::RotateCloud(float angle) {
 }
 
 void RotateCloud::cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
+  // used datasets
   pcl::PointCloud<PointT> cloud;
-  pcl::fromROSMsg(*cloud_msg, cloud);
   pcl::PointCloud<PointT>::Ptr cloud_transformed(new pcl::PointCloud<PointT>);
+
+  // Convert from ROS to PCL type
+  pcl::fromROSMsg(*cloud_msg, cloud);
 
   // Transformation matrix object, initialized as identity
   Eigen::Matrix4f transformation = Eigen::Matrix4f::Identity();
   float theta = (rotateAngle) * (M_PI / 180.0f);
 
-  // Rotation matrix (row, column)
+  // define rotation matrix (row, column)
   transformation(1, 1) = cos(theta);
   transformation(1, 2) = -sin(theta);
   transformation(2, 1) = sin(theta);

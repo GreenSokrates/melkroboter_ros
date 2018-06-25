@@ -1,4 +1,5 @@
 #include <core/DepthFilter.h>
+#include <core/RemoveLegs.h>
 #include <core/RotateCloud.h>
 
 int main(int argc, char **argv) {
@@ -8,12 +9,16 @@ int main(int argc, char **argv) {
   spinner.start();
 
   DepthFilter depthFilter;
-  RotateCloud rotateCloud = (-65);
+  RotateCloud rotateCloud_65 = (-65);
+  RemoveLegs removeLegs;
+
   // Create a ROS subscriber for the callbackfunctions in the classes
   ros::Subscriber sub_Filter = nh.subscribe(
       "/camera/depth/points", 1, &DepthFilter::cloud_cb, &depthFilter);
   ros::Subscriber sub_Rotation = nh.subscribe(
-      "/melkroboter/cloud_filtered_z", 1, &RotateCloud::cloud_cb, &rotateCloud);
+      "/melkroboter/cloud_filtered_z", 1, &RotateCloud::cloud_cb, &rotateCloud_65);
+  ros::Subscriber sub_RemLegs = nh.subscribe(
+      "/melkroboter/cloud_rotated", 1, &RemoveLegs::cloud_cb, &removeLegs);
 
   ros::Rate loop_rate(10);
   while (ros::ok()) {
