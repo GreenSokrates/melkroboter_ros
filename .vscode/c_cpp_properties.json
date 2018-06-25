@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/opt/ros/kinetic/include",
+                "/home/controller/melkroboter_ros/src/depth_filter/include",
+                "/home/controller/melkroboter_ros/src/ur_modern_driver/include",
+                "/usr/include"
+            ],
+            "name": "Linux",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}
