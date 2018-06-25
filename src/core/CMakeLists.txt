@@ -202,6 +202,8 @@ include_directories(
 
 
 add_executable(main
+  include/core/SearchTeat.h
+  src/SearchTeat.cpp
   include/core/RemoveLegs.h
   src/RemoveLegs.cpp
   include/core/RotateCloud.h
