@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="https://ros.org/wiki/xacro" name="melkroboter_ur3">
+   <xacro:include filename="$(find ur_description)/urdf/ur3.urdf.xacro" />
+   <xacro:include filename="$(find melkroboter_support)/urdf/melkarm.xacro" />
+   <!-- World link -->
+   <link name="world" />
+
+   <!-- init robot -->
+   <xacro:ur3_robot prefix="" joint_limited="true" />
+   <xacro:melkarm prefix="" />
+   <!-- Joints -->
+   <joint name="world_to_UR3" type="fixed">
+      <parent link="world" />
+      <child link="base_link" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+   </joint>
+   <joint name="ur3_tool0_to_melkarm" type="fixed">
+      <parent link="tool0" />
+      <child link="melkarm_plate" />
+      <origin xyz="0 0 0" rpy="0 0 -1.57" />
+   </joint>
+</robot>

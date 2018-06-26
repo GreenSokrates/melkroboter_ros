@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: melkroboter_support
+    relative_path: urdf/melkroboter_ur3.xacro
+    xacro_args: "--inorder "
+  SRDF:
+    relative_path: config/melkroboter_ur3.srdf
+  CONFIG:
+    author_name: Luis Meier
+    author_email: meierlui@students.zhaw.ch
+    generated_timestamp: 1530037108

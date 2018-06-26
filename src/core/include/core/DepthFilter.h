@@ -1,7 +1,7 @@
 #ifndef DEPTH_FILTER_H_
 #define DEPTH_FILTER_H_
 
-// ROS specific includes
+// ROS specific includess
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
 // PCL specific includes
