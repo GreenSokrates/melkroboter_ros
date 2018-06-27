@@ -15,8 +15,8 @@
       <origin xyz="0 0 0" rpy="0 0 0" />
    </joint>
    <joint name="ur3_tool0_to_melkarm" type="fixed">
-      <parent link="tool0" />
+      <parent link="ee_link" />
       <child link="melkarm_plate" />
-      <origin xyz="0 0 0" rpy="0 0 -1.57" />
+      <origin xyz="0 0 0" rpy="0 -1.57 3.14" />
    </joint>
 </robot>
