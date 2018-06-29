@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(core)
 
+
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+ add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -10,7 +11,7 @@ project(core)
 find_package(catkin REQUIRED)
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -35,10 +36,13 @@ find_package(catkin REQUIRED)
 ## * In this file (CMakeLists.txt):
 ##   * add "message_generation" and every package in MSG_DEP_SET to
 find_package(catkin REQUIRED COMPONENTS
+  message_generation
   pcl_conversions
   pcl_ros
   roscpp
   sensor_msgs
+  moveit_ros_planning
+  moveit_ros_planning_interface
 )
 ##   * add "message_runtime" and every package in MSG_DEP_SET to
 ##     catkin_package(CATKIN_DEPENDS ...)
@@ -48,18 +52,15 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(FILES
+  teatPosition.msg
+)
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(FILES
+  moveLinear.srv
+  moveToPose.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -69,10 +70,9 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(DEPENDENCIES
+  std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -104,6 +104,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
+  CATKIN_DEPENDS
+  message_runtime
 #  INCLUDE_DIRS include
 #  LIBRARIES core
 #  CATKIN_DEPENDS other_catkin_pkg
@@ -201,7 +203,7 @@ include_directories(
 # catkin_add_nosetests(test)
 
 
-add_executable(main
+add_executable(SearchNode
   include/core/SearchTeat.h
   src/SearchTeat.cpp
   include/core/RemoveLegs.h
@@ -210,9 +212,18 @@ add_executable(main
   src/RotateCloud.cpp
   include/core/DepthFilter.h
   src/DepthFilter.cpp
-  src/main.cpp
+  src/SearchNode.cpp
 )
-add_dependencies(main ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(main
+add_dependencies(SearchNode ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(SearchNode
+  ${catkin_LIBRARIES}
+)
+
+add_executable(RoboterNode
+  include/core/RoboterNode.h
+  src/RoboterNode.cpp
+)
+add_dependencies(RoboterNode ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(RoboterNode
   ${catkin_LIBRARIES}
 )

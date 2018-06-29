@@ -1,30 +1,63 @@
 #include <core/DepthFilter.h>
 
-DepthFilter::DepthFilter() {
-  // Create a ROS publisher for the output point cloud
-  pub = nh.advertise<sensor_msgs::PointCloud2>("/melkroboter/cloud_filtered_z", 1);
+DepthFilter::DepthFilter(ros::NodeHandle *nodehandle, float minX, float maxX,
+                         float minY, float maxY, float minZ, float maxZ)
+    : nh_(*nodehandle) {
+
+  initializePublishers();
+  initializeSubscribers();
+  minX_ = minX;
+  maxX_ = maxX;
+  minY_ = minY;
+  maxY_ = maxY;
+  minZ_ = minZ;
+  maxZ_ = maxZ;
 }
 
-void DepthFilter::cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
+void DepthFilter::initializePublishers() {
+  pub_ = nh_.advertise<sensor_msgs::PointCloud2>("/melkroboter/cloud_filtered",
+                                                 1, true);
+}
+
+void DepthFilter::initializeSubscribers() {
+  sub_ = nh_.subscribe("/camera/depth/points", 1,
+                       &DepthFilter::DepthFilter::cloud_cb_, this);
+}
+
+void DepthFilter::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
   // Container for original & filtered data
-  pcl::PCLPointCloud2 *cloud = new pcl::PCLPointCloud2;
-  pcl::PCLPointCloud2ConstPtr cloudPtr(cloud);
-  pcl::PCLPointCloud2 cloud_filtered;
+  pcl::PointCloud<PointT>::Ptr cloud_in(new pcl::PointCloud<PointT>());
+  pcl::PointCloud<PointT>::Ptr cloud_x(new pcl::PointCloud<PointT>());
+  pcl::PointCloud<PointT>::Ptr cloud_y(new pcl::PointCloud<PointT>());
+  pcl::PointCloud<PointT>::Ptr cloud_z(new pcl::PointCloud<PointT>());
 
   // Convert to PCL data type
-  pcl_conversions::toPCL(*cloud_msg, *cloud);
+  pcl::fromROSMsg(*cloud_msg, *cloud_in);
 
-  // perform filtering
-  pcl::PassThrough<pcl::PCLPointCloud2> passFilter;
-  passFilter.setInputCloud(cloudPtr);
+  pcl::PassThrough<PointT> passFilter;
+
+  // filter in x
+  passFilter.setInputCloud(cloud_in);
+  passFilter.setFilterFieldName("x");
+  passFilter.setFilterLimits(minX_, maxX_);
+  passFilter.filter(*cloud_x); // Apply the filter
+
+  // filter in y
+  passFilter.setInputCloud(cloud_x);
+  passFilter.setFilterFieldName("y");
+  passFilter.setFilterLimits(minY_, maxY_);
+  passFilter.filter(*cloud_y); // Apply the filter
+
+  // filter in z
+  passFilter.setInputCloud(cloud_y);
   passFilter.setFilterFieldName("z");
-  passFilter.setFilterLimits(0.2, 1.0);
-  passFilter.filter(cloud_filtered); // Apply the filter
+  passFilter.setFilterLimits(minZ_, maxZ_);
+  passFilter.filter(*cloud_z); // Apply the filter
 
   // Convert back to ROS data type
   sensor_msgs::PointCloud2 output;
-  pcl_conversions::fromPCL(cloud_filtered, output);
+  pcl::toROSMsg(*cloud_z, output);
 
   // Publish the data
-  pub.publish(output);
+  pub_.publish(output);
 }

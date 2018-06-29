@@ -19,21 +19,23 @@ struct Vec3 {
 
 class SearchTeat {
 public:
-  SearchTeat(float);
+  SearchTeat(ros::NodeHandle *nodehandle, float gridSize, float teatDiameter,
+             float teatLength);
   virtual ~SearchTeat(){};
-  void cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg);
 
 private:
-  ros::NodeHandle nh;
-  ros::Publisher pub;
-  ros::Publisher pub_point;
-  ros::Subscriber sub;
-  float gridSize;
-  float teatDiameter;
-  float teatLength;
+  ros::NodeHandle nh_;
+  ros::Publisher pub_point_;
+  ros::Subscriber sub_;
+  float gridSize_;
+  float teatDiameter_;
+  float teatLength_;
   std::vector<int> teatCandidates;
 
+  void initializeSubscribers();
+  void initializePublishers();
   void getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud);
+  void cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg);
   bool isTeat(int indexPoint, pcl::PointCloud<PointT>::Ptr &cloud);
 };
 

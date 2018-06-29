@@ -10,20 +10,30 @@
 #include <pcl/point_types.h>
 #include <pcl_conversions/pcl_conversions.h>
 
-
 typedef pcl::PointXYZ PointT;
 
 class DepthFilter {
 
 public:
-  DepthFilter();
+  DepthFilter(ros::NodeHandle *nodehandle, float minX, float maxX, float minY,
+              float maxY, float minZ, float maxZ);
   virtual ~DepthFilter(){};
-  void cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg);
 
 private:
-  ros::NodeHandle nh;
-  ros::Publisher pub;
-  ros::Subscriber sub;
+  ros::NodeHandle nh_;
+  ros::Publisher pub_;
+  ros::Subscriber sub_;
+  std::string FieldDirection_;
+  float minX_;
+  float maxX_;
+  float minY_;
+  float maxY_;
+  float minZ_;
+  float maxZ_;
+
+  void initializePublishers();
+  void initializeSubscribers();
+  void cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg);
 };
 
 #endif /*DEPTH_FILTER_H_ */

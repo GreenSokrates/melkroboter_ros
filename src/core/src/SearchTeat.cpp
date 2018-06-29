@@ -1,14 +1,29 @@
 #include <core/SearchTeat.h>
 
-SearchTeat::SearchTeat(float gridSize_) {
-  gridSize = gridSize_;
-  // Create a ROS publisher for the output point cloud
-  pub = nh.advertise<sensor_msgs::PointCloud2>("/melkroboter/cloud_rotated", 1);
-  // Create a ROS publisher for the output point cloud
-  pub_point = nh.advertise<geometry_msgs::PointStamped>("/melkroboter/point_stamped", 1);
+SearchTeat::SearchTeat(ros::NodeHandle *nodehandle, float gridSize,
+                       float teatDiameter, float teatLength)
+    : nh_(*nodehandle) {
+  gridSize_ = gridSize;
+  teatDiameter_ = teatDiameter;
+  teatLength_ = teatLength;
+  initializePublishers();
+  initializeSubscribers();
 }
 
-void SearchTeat::cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
+void SearchTeat::initializeSubscribers() {
+  ROS_INFO("Initializing Subscribers");
+  sub_ = nh_.subscribe("/melkroboter/cloud_no_legs", 1,
+                       &SearchTeat::SearchTeat::cloud_cb_, this);
+}
+
+void SearchTeat::initializePublishers() {
+  ROS_INFO("Initializing Publishers");
+  // Create a ROS publisher for the output point cloud
+  pub_point_ = nh_.advertise<geometry_msgs::PointStamped>(
+      "/melkroboter/point_stamped", 1, true);
+}
+
+void SearchTeat::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
   // used datasets
   pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>());
 
@@ -22,10 +37,11 @@ void SearchTeat::cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
 }
 
 void SearchTeat::getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud) {
-  pcl::GridMinimum<PointT> gridMin(gridSize);
+  pcl::GridMinimum<PointT> gridMin(gridSize_);
   gridMin.setInputCloud(cloud);
   gridMin.filter(teatCandidates);
 }
+
 bool SearchTeat::isTeat(int indexPoint, pcl::PointCloud<PointT>::Ptr &cloud) {
   // Objects
   pcl::KdTreeFLANN<PointT> kdtree;
@@ -33,9 +49,9 @@ bool SearchTeat::isTeat(int indexPoint, pcl::PointCloud<PointT>::Ptr &cloud) {
   // Datasets
   bool isteat = false;
   geometry_msgs::PointStamped pointStamped;
-  float teatRadius = 35.0 / 1000; // to get meter
-  float teatHeight = 40.0 / 1000; // to get meter
-  float teatHeightSq = teatHeight * teatHeight;
+  float teatRadius = teatDiameter_ / 2000; // to get meter and radius
+  float teatLength = teatLength_ / 1000;   // to get meter
+  float teatLengthSq = teatLength * teatLength;
   float teatRadiusSq = teatRadius * teatRadius;
   float dot, dSq;
   Vec3 teatAxisVector;
@@ -50,7 +66,7 @@ bool SearchTeat::isTeat(int indexPoint, pcl::PointCloud<PointT>::Ptr &cloud) {
   // Init teataxis
   teatAxisVector.x = 0.0f;
   teatAxisVector.y = 0.0f;
-  teatAxisVector.z = teatHeight;
+  teatAxisVector.z = teatLength;
   // Init startPoint (lowes teat point)
   startP.x = cloud->points[indexPoint].x;
   startP.y = cloud->points[indexPoint].y;
@@ -80,9 +96,9 @@ bool SearchTeat::isTeat(int indexPoint, pcl::PointCloud<PointT>::Ptr &cloud) {
             (searchPVec.z * teatAxisVector.z);
 
       // if dot product is larger than zero and smaller than the squared
-      // teatheight the point is between the lowest teat point and the end of
+      // teatLength the point is between the lowest teat point and the end of
       // the defined cylinder
-      if (dot < 0 || dot > teatHeightSq) {
+      if (dot < 0 || dot > teatLengthSq) {
         // Point is not insed of start & end bounds
         isteat = false;
         return isteat;
@@ -90,7 +106,7 @@ bool SearchTeat::isTeat(int indexPoint, pcl::PointCloud<PointT>::Ptr &cloud) {
         // Point is inside of Bounds
         dSq = (searchPVec.x * searchPVec.x + searchPVec.y * searchPVec.y +
                searchPVec.z * searchPVec.z) -
-              (dot * dot) / teatHeightSq;
+              (dot * dot) / teatLengthSq;
         if (dSq > teatRadiusSq) {
           isteat = false;
           return isteat;
@@ -98,10 +114,12 @@ bool SearchTeat::isTeat(int indexPoint, pcl::PointCloud<PointT>::Ptr &cloud) {
       }
     }
     isteat = true;
+    pointStamped.header.frame_id = "/camera_depth_frame";
+    pointStamped.header.stamp = ros::Time::now();
     pointStamped.point.x = startP.x;
     pointStamped.point.y = startP.y;
     pointStamped.point.z = startP.z;
-    pub_point.publish(pointStamped);
+    pub_point_.publish(pointStamped);
     ROS_INFO("Teat found");
   }
 }
