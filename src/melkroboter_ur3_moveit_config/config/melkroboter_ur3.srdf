@@ -30,45 +30,21 @@
         <joint name="wrist_2_joint" value="1.57" />
         <joint name="wrist_3_joint" value="-1.57" />
     </group_state>
-    <group_state name="home" group="teatcup_KDL">
-        <joint name="elbow_joint" value="0" />
-        <joint name="shoulder_lift_joint" value="0" />
-        <joint name="shoulder_pan_joint" value="3.1415" />
-        <joint name="wrist_1_joint" value="-1.57" />
-        <joint name="wrist_2_joint" value="1.57" />
-        <joint name="wrist_3_joint" value="-3.1415" />
-    </group_state>
     <group_state name="home_ur" group="teatcup_urplaner">
-        <joint name="elbow_joint" value="0" />
+        <joint name="elbow_joint" value="-0.4" />
         <joint name="shoulder_lift_joint" value="0" />
         <joint name="shoulder_pan_joint" value="3.1415" />
-        <joint name="wrist_1_joint" value="-1.57" />
+        <joint name="wrist_1_joint" value="-1.17" />
         <joint name="wrist_2_joint" value="1.57" />
         <joint name="wrist_3_joint" value="-3.1415" />
     </group_state>
     <group_state name="search_ur" group="teatcup_urplaner">
-        <joint name="elbow_joint" value="1.04" />
-        <joint name="shoulder_lift_joint" value="-0.52" />
+        <joint name="elbow_joint" value="1.0471" />
+        <joint name="shoulder_lift_joint" value="-0.3489" />
         <joint name="shoulder_pan_joint" value="1.57" />
-        <joint name="wrist_1_joint" value="-2.09" />
+        <joint name="wrist_1_joint" value="-2.2679" />
         <joint name="wrist_2_joint" value="1.57" />
         <joint name="wrist_3_joint" value="-1.57" />
-    </group_state>
-    <group_state name="straight_ur" group="teatcup_urplaner">
-        <joint name="elbow_joint" value="0" />
-        <joint name="shoulder_lift_joint" value="-1.57" />
-        <joint name="shoulder_pan_joint" value="0" />
-        <joint name="wrist_1_joint" value="-1.57" />
-        <joint name="wrist_2_joint" value="1.57" />
-        <joint name="wrist_3_joint" value="-3.1415" />
-    </group_state>
-    <group_state name="straight" group="teatcup_KDL">
-        <joint name="elbow_joint" value="0" />
-        <joint name="shoulder_lift_joint" value="-1.57" />
-        <joint name="shoulder_pan_joint" value="0" />
-        <joint name="wrist_1_joint" value="-1.57" />
-        <joint name="wrist_2_joint" value="1.57" />
-        <joint name="wrist_3_joint" value="-3.1415" />
     </group_state>
     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
     <virtual_joint name="FixedBase" type="fixed" parent_frame="world" child_link="world" />

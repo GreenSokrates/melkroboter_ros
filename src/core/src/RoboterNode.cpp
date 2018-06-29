@@ -41,13 +41,13 @@ bool RoboterNode::MoveToPose_cb_(core::moveToPose::Request &req,
   myPose.orientation.x = req.oX;
   myPose.orientation.y = req.oY;
   myPose.orientation.z = req.oZ;
-  group->setPoseTarget(myPose);
+  group->setNamedTarget("search_ur");
   if (group->move()) {
     res.status = true;
   } else {
     res.status = false;
   }
-  return 1;
+  return true;
 }
 
 bool RoboterNode::MoveLinear_cb_(core::moveLinear::Request &req,

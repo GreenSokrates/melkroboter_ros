@@ -4,14 +4,14 @@ DepthFilter::DepthFilter(ros::NodeHandle *nodehandle, float minX, float maxX,
                          float minY, float maxY, float minZ, float maxZ)
     : nh_(*nodehandle) {
 
-  initializePublishers();
-  initializeSubscribers();
   minX_ = minX;
   maxX_ = maxX;
   minY_ = minY;
   maxY_ = maxY;
   minZ_ = minZ;
   maxZ_ = maxZ;
+  initializePublishers();
+  initializeSubscribers();
 }
 
 void DepthFilter::initializePublishers() {
@@ -20,7 +20,7 @@ void DepthFilter::initializePublishers() {
 }
 
 void DepthFilter::initializeSubscribers() {
-  sub_ = nh_.subscribe("/camera/depth/points", 1,
+  sub_ = nh_.subscribe("/camera/depth_registered/points", 1,
                        &DepthFilter::DepthFilter::cloud_cb_, this);
 }
 

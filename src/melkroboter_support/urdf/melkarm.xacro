@@ -78,7 +78,7 @@
       <joint name="becherhalter_to_melkbecher" type="fixed">
          <parent link="${prefix}melkarm_becherhalter" />
          <child link="${prefix}melkarm_melkbecher" />
-         <origin xyz="0.04 0.07 0" rpy="0 0 0" />
+         <origin xyz="0.04 0.07 -0.040" rpy="0 0 0" />
       </joint>
       <link name="${prefix}melkarm_melkbecher">
          <visual>
@@ -119,7 +119,7 @@
       <joint name="${prefix}becher_to_teatcuptcp" type="fixed">
          <parent link="${prefix}melkarm_melkbecher" />
          <child link="${prefix}teatcup_tcp" />
-         <origin xyz="0 0 0.180" rpy="0 0 0" />
+         <origin xyz="0 0 0.170" rpy="0 0 0" />
       </joint>
       <!-- define Camera link -->
       <link name="camera_link">

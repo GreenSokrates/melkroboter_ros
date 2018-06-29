@@ -1,0 +1,19 @@
+<launch>
+    <arg name="robot_ip" default="192.168.1.51"/>
+    <arg name="sim" default="false"/>
+    <!-- launch the UR3 driver and Plannung -->
+    <include file="$(find melkroboter_ur3_moveit_config)/launch/melkroboter_ur3_moveit_planning_execution.launch" >
+        <arg name="sim" value="$(arg sim)"/>
+        <arg name="robot_ip" value="$(arg robot_ip)"/>
+    </include>
+
+    <!-- Launch the astra camera -->
+    <include file="$(find astra_launch)/launch/astra.launch" >
+        <arg name="depth_registration" value="true" />
+    </include>
+
+    <!-- Launch the SearchNode -->
+    <node name="SearchNode" pkg="core" type="SearchNode"/>
+    <!-- Launch the RoboterNode -->
+    <node name="RoboterNode" pkg="core" type="RoboterNode" />
+</launch>
