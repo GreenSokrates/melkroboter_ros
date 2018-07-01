@@ -1,7 +1,7 @@
 #include <core/RotateCloud.h>
 
 RotateCloud::RotateCloud(float angle) {
-    rotateAngle = angle;
+  rotateAngle = angle;
 
   // Create a ROS publisher for the output point cloud
   pub = nh.advertise<sensor_msgs::PointCloud2>("/melkroboter/cloud_rotated", 1);

@@ -2,8 +2,8 @@
 
 DepthFilter::DepthFilter(ros::NodeHandle *nodehandle, float minX, float maxX,
                          float minY, float maxY, float minZ, float maxZ)
-    : nh_(*nodehandle) {
-
+    : nh_(*nodehandle)
+{
   minX_ = minX;
   maxX_ = maxX;
   minY_ = minY;
@@ -14,17 +14,20 @@ DepthFilter::DepthFilter(ros::NodeHandle *nodehandle, float minX, float maxX,
   initializeSubscribers();
 }
 
-void DepthFilter::initializePublishers() {
+void DepthFilter::initializePublishers()
+{
   pub_ = nh_.advertise<sensor_msgs::PointCloud2>("/melkroboter/cloud_filtered",
                                                  1, true);
 }
 
-void DepthFilter::initializeSubscribers() {
+void DepthFilter::initializeSubscribers()
+{
   sub_ = nh_.subscribe("/camera/depth_registered/points", 1,
                        &DepthFilter::DepthFilter::cloud_cb_, this);
 }
 
-void DepthFilter::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
+void DepthFilter::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg)
+{
   // Container for original & filtered data
   pcl::PointCloud<PointT>::Ptr cloud_in(new pcl::PointCloud<PointT>());
   pcl::PointCloud<PointT>::Ptr cloud_x(new pcl::PointCloud<PointT>());

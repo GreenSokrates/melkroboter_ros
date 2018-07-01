@@ -3,18 +3,20 @@
 
 // ROS specific includes
 #include <geometry_msgs/PointStamped.h>
-#include <pcl_conversions/pcl_conversions.h>
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
 
 // PCL specific includes
+#include <iostream>
+#include <pcl/common/transforms.h>
 #include <pcl/filters/grid_minimum.h>
 #include <pcl/kdtree/kdtree_flann.h>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl_conversions/pcl_conversions.h>
 
 // Includes for Service
 #include <core/TeatSearchService.h>
-
-#include <pcl/visualization/pcl_visualizer.h>
 
 typedef pcl::PointXYZ PointT;
 struct Vec3 {
@@ -24,6 +26,7 @@ struct Vec3 {
 };
 
 class SearchTeat {
+
 public:
   SearchTeat(ros::NodeHandle *nodehandle, float gridSize, float teatDiameter,
              float teatLength);
@@ -39,19 +42,18 @@ private:
   float teatDiameter_;
   float teatLength_;
   std::vector<int> teatCandidates;
-  pcl::PointCloud<PointT>::Ptr cloud;
-
+  pcl::PointCloud<PointT>::Ptr cloud_;
 
   void initializeSubscribers();
   void initializePublishers();
   void initializeServices();
 
-  pcl::PointCloud<PointT>::Ptr cloud;
   void getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud);
   void cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg);
   bool Service_cb_(core::TeatSearchService::Request &req,
-                               core::TeatSearchService::Response &res);
+                   core::TeatSearchService::Response &res);
   bool isTeat(int indexPoint, pcl::PointCloud<PointT>::Ptr &cloud);
+  pcl::PointCloud<PointT> rotateCloudBack(pcl::PointCloud<PointT> cloud);
 };
 
 #endif /* SEARCH_TEAT_H_ */

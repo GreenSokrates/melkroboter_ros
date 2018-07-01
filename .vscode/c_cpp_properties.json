@@ -6,13 +6,18 @@
                 "limitSymbolsToIncludedHeaders": true
             },
             "includePath": [
+                "/home/controller/melkroboter_ros/devel/include",
                 "/opt/ros/kinetic/include",
-                "/home/controller/melkroboter_ros/src/depth_filter/include",
+                "/home/controller/melkroboter_ros/src/ros_astra_camera/include",
+                "/home/controller/melkroboter_ros/src/core/include",
                 "/home/controller/melkroboter_ros/src/ur_modern_driver/include",
                 "/usr/include"
             ],
             "name": "Linux",
-            "intelliSenseMode": "clang-x64"
+            "intelliSenseMode": "clang-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
         }
     ],
     "version": 4
