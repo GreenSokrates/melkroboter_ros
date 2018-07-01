@@ -15,5 +15,5 @@
     <!-- Launch the SearchNode -->
     <node name="SearchNode" pkg="core" type="SearchNode"/>
     <!-- Launch the RoboterNode -->
-    <node name="RoboterNode" pkg="core" type="RoboterNode" />
+    <node name="RoboterNode" pkg="core" type="RoboterNode" launch-prefix="xterm -e" />
 </launch>

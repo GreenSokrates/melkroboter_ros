@@ -16,6 +16,7 @@ class RoboterNode
 public:
   RoboterNode(ros::NodeHandle *nodehandle);
   virtual ~RoboterNode(){};
+  bool moveToNamed(std::string poseName);
 
 private:
   ros::NodeHandle nh_;
@@ -25,8 +26,9 @@ private:
 
   void initializeServices();
   void initializePlanner();
-  bool MoveToPose_cb_(core::moveToPose::Request &req, core::moveToPose::Response &res);
-  bool MoveLinear_cb_(core::moveLinear::Request &req, core::moveLinear::Response &res);
+  bool moveToPose_cb_(core::moveToPose::Request &req, core::moveToPose::Response &res);
+  bool moveLinear_cb_(core::moveLinear::Request &req, core::moveLinear::Response &res);
+
 };
 
 #endif /* ROBOTER_NODE_H_ */
