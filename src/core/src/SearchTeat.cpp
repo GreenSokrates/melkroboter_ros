@@ -6,8 +6,10 @@ SearchTeat::SearchTeat(ros::NodeHandle *nodehandle, float gridSize,
   gridSize_ = gridSize;
   teatDiameter_ = teatDiameter;
   teatLength_ = teatLength;
+
   initializePublishers();
   initializeSubscribers();
+  initializeServices();
 }
 
 void SearchTeat::initializeSubscribers() {
@@ -23,17 +25,34 @@ void SearchTeat::initializePublishers() {
       "/melkroboter/point_stamped", 1, true);
 }
 
+void SearchTeat::initializeServices() {
+  ROS_INFO("Initializing Services");
+  searchTeat_service_ = nh_.advertiseService(
+      "/Melkroboter/SearchTeat", &SearchTeat::SearchTeat::Service_cb_, this);
+}
+
+bool SearchTeat::Service_cb_(core::TeatSearchService::Request &req,
+                             core::TeatSearchService::Response &res) {
+  ROS_INFO("Service CB");
+
+  return true;
+}
+
 void SearchTeat::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
   // used datasets
   pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>());
 
   // Convert from ROS to PCL type
   pcl::fromROSMsg(*cloud_msg, *cloud);
-
+  int teatCounter = 0;
   getMinPoints(cloud);
+
   for (size_t i = 0; i < teatCandidates.size(); i++) {
-    isTeat(teatCandidates[i], cloud);
+    if (isTeat(teatCandidates[i], cloud)) {
+      teatCounter++;
+    }
   }
+  ROS_INFO("Sum: %ld", (int)teatCounter);
 }
 
 void SearchTeat::getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud) {
@@ -114,12 +133,13 @@ bool SearchTeat::isTeat(int indexPoint, pcl::PointCloud<PointT>::Ptr &cloud) {
       }
     }
     isteat = true;
-    pointStamped.header.frame_id = "/camera_depth_frame";
+    pointStamped.header.frame_id = "/camera_depth_optical_frame";
     pointStamped.header.stamp = ros::Time::now();
     pointStamped.point.x = startP.x;
     pointStamped.point.y = startP.y;
     pointStamped.point.z = startP.z;
     pub_point_.publish(pointStamped);
-    ROS_INFO("Teat found");
+    ROS_INFO("Teat Found");
+    return isteat;
   }
 }

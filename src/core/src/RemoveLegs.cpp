@@ -58,8 +58,8 @@ RemoveLegs::removeLeg(pcl::PointCloud<PointT>::Ptr &cloud, int leg) {
   reg.setNumberOfNeighbours(30);
   reg.setInputCloud(cloud);
   reg.setInputNormals(normals);
-  reg.setSmoothnessThreshold(10 / 180.0 * M_PI);
-  reg.setCurvatureThreshold(5.0);
+  reg.setSmoothnessThreshold(6.5 / 180.0 * M_PI);
+  reg.setCurvatureThreshold(6.5);
 
   reg.getSegmentFromPoint(minPoints[leg], *cluster);
 
