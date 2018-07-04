@@ -86,16 +86,21 @@ bool RoboterNode::start_cb_(core::startMelk::Request &req, core::startMelk::Resp
   callTeatSearch_();
 
   geometry_msgs::Pose pose;
-  pose.position.x = xVector[0];
-  pose.position.y = yVector[0];
-  pose.position.z = zVector[0] - 0.05;
-  pose.orientation.w = 0.707;
-  pose.orientation.x = 0.0;
-  pose.orientation.y = 0.0;
-  pose.orientation.z = -0.707;
 
-  moveToPose_(pose);
-  ros::Duration(2).sleep();
+  for (size_t i = 0; i < 5; i++)
+  {
+    pose.position.x = xVector[i];
+    pose.position.y = yVector[i];
+    pose.position.z = zVector[i] - 0.05;
+    pose.orientation.w = 0.707;
+    pose.orientation.x = 0.0;
+    pose.orientation.y = 0.0;
+    pose.orientation.z = -0.707;
+
+    ROS_INFO("Attatching Teatcup 1");
+    attatchTeatcup_(pose, 0.0, 0.0, -0.010);
+    ros::Duration(2).sleep();
+  }
 
   /*
     ROS_INFO("Going into for loop");
@@ -138,8 +143,8 @@ bool RoboterNode::moveLinear_(geometry_msgs::Pose &pose)
 
   moveit_msgs::RobotTrajectory trajectory_msg;
   double fraction = group->computeCartesianPath(waypoints_tool,
-                                                0.001, // eef_step
-                                                5,     // jump_threshold
+                                                0.001,  // eef_step
+                                                5,      // jump_threshold
                                                 trajectory_msg, true);
   plan.trajectory_ = trajectory_msg;
   ROS_INFO("Visualizing Cartesian Path (%2f%% acheived)", fraction * 100.0);
@@ -167,8 +172,8 @@ bool RoboterNode::moveLinear_(double x, double y, double z)
 
   moveit_msgs::RobotTrajectory trajectory_msg;
   double fraction = group->computeCartesianPath(waypoints_tool,
-                                                0.001, // eef_step
-                                                5,     // jump_threshold
+                                                0.001,  // eef_step
+                                                5,      // jump_threshold
                                                 trajectory_msg, true);
   plan.trajectory_ = trajectory_msg;
   ROS_INFO("Visualizing Cartesian Path (%2f%% acheived)", fraction * 100.0);
@@ -203,6 +208,7 @@ void RoboterNode::attatchTeatcup_(geometry_msgs::Pose &pose, float xOffset, floa
   moveToPose_(offsetPose);
   // linear up
   moveLinear_(pose);
+  ros::Duration(0.5).sleep();
   // linear down
   moveLinear_(offsetPose);
   return;
@@ -239,7 +245,7 @@ int main(int argc, char **argv)
 
   RoboterNode roboternode(&nh);
 
-  ros::Duration(5).sleep(); // sleep for half a second
+  ros::Duration(5).sleep();  // sleep for half a second
 
   std::cout << "Roboter is ready to start!  \n\n"
             << "It will move to Home first\n"
@@ -257,7 +263,7 @@ int main(int argc, char **argv)
   roboternode.moveToNamed_("home_ur");
 
   ROS_INFO("RoboterNode is up");
-  ros::Rate loop_rate(10); // Freq of 10 Hz
+  ros::Rate loop_rate(10);  // Freq of 10 Hz
   while (ros::ok())
   {
     loop_rate.sleep();
