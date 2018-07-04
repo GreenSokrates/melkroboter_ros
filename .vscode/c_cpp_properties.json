@@ -11,7 +11,9 @@
                 "/home/controller/melkroboter_ros/src/ros_astra_camera/include",
                 "/home/controller/melkroboter_ros/src/core/include",
                 "/home/controller/melkroboter_ros/src/ur_modern_driver/include",
-                "/usr/include"
+                "/usr/include",
+                "/usr/include/eigen3",
+                "/usr/include/eigen3"
             ],
             "name": "Linux",
             "intelliSenseMode": "clang-x64",

@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
   spinner.start();
 
   // CreateFilters
-  DepthFilter depthFilter(&nh, -1.0, 1.0, -1.0, 2.0, 0.2, 0.8);
+  DepthFilter depthFilter(&nh, -1.0, 1.0, -0.2, 0.8, 0.2, 0.8);
   RotateCloud rotateCloud_65(-65);
   RemoveLegs removeLegs;
   SearchTeat searchTeat(&nh, 0.08, 30.0, 50.0);

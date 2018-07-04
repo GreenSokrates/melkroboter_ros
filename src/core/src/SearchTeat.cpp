@@ -53,16 +53,16 @@ bool SearchTeat::Service_cb_(core::TeatSearchService::Request &req,
   getMinPoints(cloud_freezed);
 
   // Rotate Cloud
-  *cloud_original = SearchTeat::rotateCloudBack(*cloud_freezed);
+  //*cloud_original = SearchTeat::rotateCloudBack(*cloud_freezed);
   int j = 0;
   for (size_t i = 0; i < teatCandidates.size(); i++)
   {
     if (isTeat(teatCandidates[i], cloud_freezed))
     {
       teatCount++;
-      xVector.push_back(cloud_original->points[teatCandidates[i]].x);
-      yVector.push_back(cloud_original->points[teatCandidates[i]].y);
-      zVector.push_back(cloud_original->points[teatCandidates[i]].z);
+      xVector.push_back(-(cloud_freezed->points[teatCandidates[i]].x));
+      yVector.push_back(-(cloud_freezed->points[teatCandidates[i]].y));
+      zVector.push_back(cloud_freezed->points[teatCandidates[i]].z);
     }
   }
   res.count = teatCount;
@@ -165,7 +165,7 @@ bool SearchTeat::isTeat(int indexPoint, pcl::PointCloud<PointT>::Ptr &cloud)
       }
     }
     isteat = true;
-    pointStamped.header.frame_id = "/camera_depth_optical_frame";
+    pointStamped.header.frame_id = (*cloud).header.frame_id;
     pointStamped.header.stamp = ros::Time::now();
     pointStamped.point.x = startP.x;
     pointStamped.point.y = startP.y;
