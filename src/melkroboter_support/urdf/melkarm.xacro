@@ -121,6 +121,7 @@
          <child link="${prefix}teatcup_tcp" />
          <origin xyz="0 0 0.170" rpy="0 0 0" />
       </joint>
+
       <!-- define Camera link -->
       <link name="camera_link">
       <visual>
