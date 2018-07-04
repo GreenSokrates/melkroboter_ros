@@ -1,5 +1,4 @@
 #request
-bool instatus
 ---
 #response
-bool outstatus
+bool status
