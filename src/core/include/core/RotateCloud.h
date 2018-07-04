@@ -4,6 +4,8 @@
 // ROS specific includes
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <tf/transform_listener.h>
+#include <pcl_ros/transforms.h>
 
 // PCL specific includes
 #include <iostream>
@@ -27,6 +29,7 @@ private:
   ros::NodeHandle nh;
   ros::Publisher pub;
   ros::Subscriber sub;
+  tf::TransformListener *listener;
 };
 
 #endif /* ROTATE_CLOUD_H_ */

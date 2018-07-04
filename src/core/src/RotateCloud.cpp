@@ -3,10 +3,12 @@
 RotateCloud::RotateCloud(float angle) {
   rotateAngle = angle;
 
+  listener = new tf::TransformListener();
+
   // Create a ROS publisher for the output point cloud
   pub = nh.advertise<sensor_msgs::PointCloud2>("/melkroboter/cloud_rotated", 1);
 }
-
+/*
 void RotateCloud::cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
   // used datasets
   pcl::PointCloud<PointT> cloud;
@@ -33,5 +35,15 @@ void RotateCloud::cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
   pcl::toROSMsg(*cloud_transformed, output);
 
   // Publish the data
+  pub.publish(output);
+} */
+
+void RotateCloud::cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
+  sensor_msgs::PointCloud2 output;
+
+  listener->waitForTransform("/base", (*cloud_msg).header.frame_id, (*cloud_msg).header.stamp, ros::Duration(5.0));
+
+  pcl_ros::transformPointCloud("/base", *cloud_msg, output, *listener);
+
   pub.publish(output);
 }
