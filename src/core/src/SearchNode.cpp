@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
       "/melkroboter/cloud_rotated", 1, &RemoveLegs::cloud_cb, &removeLegs);
 
   ROS_INFO("SearchNode ready");
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(30);
   while (ros::ok()) {
     loop_rate.sleep();
   }

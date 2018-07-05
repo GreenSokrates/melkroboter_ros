@@ -1,22 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <robot xmlns:xacro="https://ros.org/wiki/xacro" name="melkroboter_ur3">
-   <xacro:include filename="$(find ur_description)/urdf/ur3.urdf.xacro" />
-   <xacro:include filename="$(find melkroboter_support)/urdf/melkarm.xacro" />
-   <!-- World link -->
-   <link name="world" />
 
-   <!-- init robot -->
-   <xacro:ur3_robot prefix="" joint_limited="true" />
-   <xacro:melkarm prefix="" />
-   <!-- Joints -->
-   <joint name="world_to_UR3" type="fixed">
-      <parent link="world" />
-      <child link="base_link" />
-      <origin xyz="0 0 0" rpy="0 0 0" />
-   </joint>
-   <joint name="ur3_tool0_to_melkarm" type="fixed">
-      <parent link="ee_link" />
-      <child link="melkarm_plate" />
-      <origin xyz="0 0 0" rpy="0 -1.57 3.14" />
-   </joint>
+    <!-- Include the Robot and the tool -->
+    <xacro:include filename="$(find ur_description)/urdf/ur3.urdf.xacro" />
+    <xacro:include filename="$(find melkroboter_support)/urdf/melkarm.xacro" />
+
+    <!-- World link -->
+    <link name="world" />
+
+    <!-- init robot -->
+    <xacro:ur3_robot prefix="" joint_limited="true" />
+    <xacro:melkarm prefix="" />
+
+    <!-- Table -->
+    <link name="table">
+        <collision>
+            <geometry>
+                <box size="5.0 5.0 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Joints -->
+    <joint name="world_to_UR3" type="fixed">
+        <parent link="world" />
+        <child link="base_link" />
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+    <joint name="ur3_tool0_to_melkarm" type="fixed">
+        <parent link="ee_link" />
+        <child link="melkarm_plate" />
+        <origin xyz="0 0 0" rpy="0 -1.57 3.14" />
+    </joint>
+    <joint name="table_to_world" type="fixed">
+        <parent link="world" />
+        <child link="table" />
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
 </robot>

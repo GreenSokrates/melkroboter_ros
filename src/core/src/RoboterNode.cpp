@@ -2,7 +2,6 @@
 
 RoboterNode::RoboterNode(ros::NodeHandle *nodehandle) : nh_(*nodehandle)
 {
-  ROS_INFO("Constructed a RoboterNodeClass");
   initializeServices();
   initializePlanner();
   initializeServiceClients();
@@ -10,7 +9,7 @@ RoboterNode::RoboterNode(ros::NodeHandle *nodehandle) : nh_(*nodehandle)
 
 void RoboterNode::initializeServices()
 {
-  ROS_INFO("Initializing Services");
+  ROS_INFO("Initializing Services Servers");
   MoveToPose_Service_ =
       nh_.advertiseService("/Melkroboter/MoveToPose", &RoboterNode::RoboterNode::moveToPose_cb_, this);
   MoveLinear_Service_ =
@@ -21,11 +20,8 @@ void RoboterNode::initializeServices()
 
 void RoboterNode::initializeServiceClients()
 {
+  ROS_INFO("Initialice Service Clients");
   TeatSearchClient_ = nh_.serviceClient<core::TeatSearchService>("/Melkroboter/SearchTeat");
-  /*client_moveLinear_ =
-      nh_.serviceClient<core::moveLinear>("/Melkroboter/MoveLinear");
-  client_movePose_ =
-      nh_.serviceClient<core::moveToPose>("/Melkroboter/MoveToPose");*/
 }
 
 void RoboterNode::initializePlanner()
@@ -143,8 +139,8 @@ bool RoboterNode::moveLinear_(geometry_msgs::Pose &pose)
 
   moveit_msgs::RobotTrajectory trajectory_msg;
   double fraction = group->computeCartesianPath(waypoints_tool,
-                                                0.001,  // eef_step
-                                                5,      // jump_threshold
+                                                0.001, // eef_step
+                                                5,     // jump_threshold
                                                 trajectory_msg, true);
   plan.trajectory_ = trajectory_msg;
   ROS_INFO("Visualizing Cartesian Path (%2f%% acheived)", fraction * 100.0);
@@ -172,8 +168,8 @@ bool RoboterNode::moveLinear_(double x, double y, double z)
 
   moveit_msgs::RobotTrajectory trajectory_msg;
   double fraction = group->computeCartesianPath(waypoints_tool,
-                                                0.001,  // eef_step
-                                                5,      // jump_threshold
+                                                0.001, // eef_step
+                                                5,     // jump_threshold
                                                 trajectory_msg, true);
   plan.trajectory_ = trajectory_msg;
   ROS_INFO("Visualizing Cartesian Path (%2f%% acheived)", fraction * 100.0);
@@ -245,7 +241,7 @@ int main(int argc, char **argv)
 
   RoboterNode roboternode(&nh);
 
-  ros::Duration(5).sleep();  // sleep for half a second
+  ros::Duration(5).sleep(); // sleep for half a second
 
   std::cout << "Roboter is ready to start!  \n\n"
             << "It will move to Home first\n"
@@ -263,7 +259,7 @@ int main(int argc, char **argv)
   roboternode.moveToNamed_("home_ur");
 
   ROS_INFO("RoboterNode is up");
-  ros::Rate loop_rate(10);  // Freq of 10 Hz
+  ros::Rate loop_rate(10); // Freq of 10 Hz
   while (ros::ok())
   {
     loop_rate.sleep();
