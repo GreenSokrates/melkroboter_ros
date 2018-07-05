@@ -1,0 +1,4 @@
+[submodule "src/orbbec_camera/ros_astra_camera"]
+	url = https://github.com/GreenSokrates/ros_astra_camera.git
+[submodule "src/orbbec_camera/ros_astra_launch"]
+	url = https://github.com/GreenSokrates/ros_astra_launch.git
