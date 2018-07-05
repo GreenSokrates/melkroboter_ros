@@ -111,7 +111,7 @@ bool RoboterNode::start_cb_(core::startMelk::Request &req, core::startMelk::Resp
       client_movePose_.call(srv_moveToPose);
       ros::Duration(2).sleep();
     } */
-  res.outstatus = true;
+  res.status = true;
 
   moveToNamed_("home_ur");
   return true;

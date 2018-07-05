@@ -5,10 +5,9 @@
    <!-- World link -->
    <link name="world" />
 
-   <!-- init robot and arm -->
+   <!-- init robot -->
    <xacro:ur3_robot prefix="" joint_limited="true" />
    <xacro:melkarm prefix="" />
-
    <!-- Joints -->
    <joint name="world_to_UR3" type="fixed">
       <parent link="world" />

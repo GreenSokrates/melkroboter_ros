@@ -8,7 +8,6 @@ RotateCloud::RotateCloud(float angle) {
   // Create a ROS publisher for the output point cloud
   pub = nh.advertise<sensor_msgs::PointCloud2>("/melkroboter/cloud_rotated", 1);
 }
-
 /*
 void RotateCloud::cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
   // used datasets
@@ -37,8 +36,7 @@ void RotateCloud::cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
 
   // Publish the data
   pub.publish(output);
-}
- */
+} */
 
 void RotateCloud::cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
   sensor_msgs::PointCloud2 output;

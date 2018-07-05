@@ -14,6 +14,6 @@
 
     <!-- Launch the SearchNode -->
     <node name="SearchNode" pkg="core" type="SearchNode"/>
-    <!-- Launch the RoboterNode in external console -->
-    <node name="RoboterNode" pkg="core" type="RoboterNode" launch-prefix="xterm -e" />
+    <!-- Launch the RoboterNode in external console
+    <node name="RoboterNode" pkg="core" type="RoboterNode" launch-prefix="xterm -e" />-->
 </launch>
