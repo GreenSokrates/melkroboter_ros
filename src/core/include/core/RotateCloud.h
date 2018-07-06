@@ -2,10 +2,10 @@
 #define ROTATE_CLOUD_H_
 
 // ROS specific includes
+#include <pcl_ros/transforms.h>
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <tf/transform_listener.h>
-#include <pcl_ros/transforms.h>
 
 // PCL specific includes
 #include <iostream>
@@ -16,20 +16,26 @@
 
 typedef pcl::PointXYZ PointT;
 
-class RotateCloud {
-  float rotateAngle;
-  Eigen::Matrix4f transformation;
+class RotateCloud
+{
+	float rotateAngle;
+	Eigen::Matrix4f transformation;
 
-public:
-  RotateCloud(float);
-  virtual ~RotateCloud(){};
-  void cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg);
+  public:
+	RotateCloud(ros::NodeHandle *nodehandle);
+	virtual ~RotateCloud(){};
 
-private:
-  ros::NodeHandle nh;
-  ros::Publisher pub;
-  ros::Subscriber sub;
-  tf::TransformListener *listener;
+  private:
+	ros::NodeHandle nh_;
+	ros::Publisher pub_;
+	ros::Subscriber sub_;
+	tf::TransformListener *listener;
+
+	// Initializing Methods
+	void initializeSubscribers();
+	void initializePublishers();
+
+	void cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg);
 };
 
 #endif /* ROTATE_CLOUD_H_ */

@@ -13,7 +13,8 @@
                 "/home/controller/melkroboter_ros/src/ur_modern_driver/include",
                 "/usr/include",
                 "/usr/include/eigen3",
-                "/usr/include/eigen3"
+                "/usr/include/eigen3",
+                "/usr/include/pcl-1.7"
             ],
             "name": "Linux",
             "intelliSenseMode": "clang-x64",

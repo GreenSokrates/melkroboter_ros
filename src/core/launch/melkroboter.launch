@@ -12,8 +12,10 @@
         <arg name="depth_registration" value="true" />
     </include>
 
-    <!-- Launch the SearchNode -->
-    <node name="SearchNode" pkg="core" type="SearchNode"/>
-    <!-- Launch the RoboterNode in external console
-    <node name="RoboterNode" pkg="core" type="RoboterNode" launch-prefix="xterm -e" />-->
+    <!-- Launch the used nodes -->
+    <node name="FilterNode" pkg="core" type="DepthFilter" launch-prefix="xterm -e" />
+    <node name="RotateNode" pkg="core" type="RotateCloud"  launch-prefix="xterm -e"/> 
+    <node name="SearchTeat" pkg="core" type="SearchTeat"  launch-prefix="xterm -e"/>
+    <!-- Launch the RoboterNode in external console-->
+    <node name="RoboterNode" pkg="core" type="RoboterNode" launch-prefix="xterm -e"  />
 </launch>

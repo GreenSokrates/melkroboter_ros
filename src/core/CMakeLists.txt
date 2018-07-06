@@ -206,22 +206,17 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-
-add_executable(SearchNode
-  include/core/SearchTeat.h
-  src/SearchTeat.cpp
+#[[
+add_executable(SearchMain
+  src/SearchMain.cpp
   include/core/RemoveLegs.h
   src/RemoveLegs.cpp
-  include/core/RotateCloud.h
-  src/RotateCloud.cpp
-  include/core/DepthFilter.h
-  src/DepthFilter.cpp
-  src/SearchNode.cpp
 )
-add_dependencies(SearchNode ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(SearchNode
+add_dependencies(SearchMain ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(SearchMain
   ${catkin_LIBRARIES}
 )
+]]##
 
 add_executable(RoboterNode
   include/core/RoboterNode.h
@@ -229,5 +224,32 @@ add_executable(RoboterNode
 )
 add_dependencies(RoboterNode ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(RoboterNode
+  ${catkin_LIBRARIES}
+)
+
+add_executable(SearchTeat
+  include/core/SearchTeat.h
+  src/SearchTeat.cpp
+)
+add_dependencies(SearchTeat ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(SearchTeat
+  ${catkin_LIBRARIES}
+)
+
+add_executable(DepthFilter
+  include/core/DepthFilter.h
+  src/DepthFilter.cpp
+)
+add_dependencies(DepthFilter ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(DepthFilter
+  ${catkin_LIBRARIES}
+)
+
+add_executable(RotateCloud
+  include/core/RotateCloud.h
+  src/RotateCloud.cpp
+)
+add_dependencies(RotateCloud ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(RotateCloud
   ${catkin_LIBRARIES}
 )

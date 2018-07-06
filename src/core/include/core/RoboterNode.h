@@ -16,51 +16,51 @@
 
 class RoboterNode
 {
-public:
-  RoboterNode(ros::NodeHandle *nodehandle);
-  virtual ~RoboterNode(){};
-  void moveToNamed_(std::string poseName);
+  public:
+	RoboterNode(ros::NodeHandle *nodehandle);
+	virtual ~RoboterNode(){};
+	void moveToNamed_(std::string poseName);
 
-private:
-  ros::NodeHandle nh_;
+  private:
+	ros::NodeHandle nh_;
 
-  // Service Servers
-  ros::ServiceServer MoveToPose_Service_;
-  ros::ServiceServer MoveLinear_Service_;
-  ros::ServiceServer Start_Service_;
-  ros::ServiceServer RobotPose_Service_;
+	// Service Servers
+	ros::ServiceServer MoveToPose_Service_;
+	ros::ServiceServer MoveLinear_Service_;
+	ros::ServiceServer Start_Service_;
+	ros::ServiceServer RobotPose_Service_;
 
-  // Service Clients
-  ros::ServiceClient TeatSearchClient_;
-  // core::TeatSearchService srv_teatSearch;
-  // MoveGroup Interface
-  boost::shared_ptr<moveit::planning_interface::MoveGroupInterface> group;
+	// Service Clients
+	ros::ServiceClient TeatSearchClient_;
+	// core::TeatSearchService srv_teatSearch;
+	// MoveGroup Interface
+	boost::shared_ptr<moveit::planning_interface::MoveGroupInterface> group;
 
-  int teatCount = 0;
-  std::vector<double> xVector;
-  std::vector<double> yVector;
-  std::vector<double> zVector;
+	int teatCount = 0;
+	std::vector<double> xVector;
+	std::vector<double> yVector;
+	std::vector<double> zVector;
 
-  // Initialize Methods
-  void initializeServices();
-  void initializePlanner();
-  void initializeServiceClients();
+	// Initialize Methods
+	void initializeServices();
+	void initializePlanner();
+	void initializeServiceClients();
 
-  bool callTeatSearch_();
+	bool callTeatSearch_();
 
-  bool start_cb_(core::startMelk::Request &req, core::startMelk::Response &res);
+	bool start_cb_(core::startMelk::Request &req, core::startMelk::Response &res);
 
-  // Service Callback Methods
-  bool moveToPose_cb_(core::moveToPose::Request &req, core::moveToPose::Response &res);
-  bool moveLinear_cb_(core::moveLinear::Request &req, core::moveLinear::Response &res);
-  bool getPose_cb_(core::getPose::Request &req, core::getPose::Response &res);
+	// Service Callback Methods
+	bool moveToPose_cb_(core::moveToPose::Request &req, core::moveToPose::Response &res);
+	bool moveLinear_cb_(core::moveLinear::Request &req, core::moveLinear::Response &res);
+	bool getPose_cb_(core::getPose::Request &req, core::getPose::Response &res);
 
-  // Robot Movement Methods
+	// Robot Movement Methods
 
-  bool moveToPose_(geometry_msgs::Pose &position);
-  bool moveLinear_(geometry_msgs::Pose &pose);
-  bool moveLinear_(double x, double y, double z);
-  void attatchTeatcup_(geometry_msgs::Pose &pose, float xOffset, float yOffset, float zOffset);
+	bool moveToPose_(geometry_msgs::Pose &position);
+	bool moveLinear_(geometry_msgs::Pose &pose);
+	bool moveLinear_(double x, double y, double z);
+	void attatchTeatcup_(geometry_msgs::Pose &pose, float xOffset, float yOffset, float zOffset);
 };
 
 #endif /* ROBOTER_NODE_H_ */
