@@ -2,20 +2,43 @@
     <arg name="robot_ip" default="192.168.1.51"/>
     <arg name="sim" default="false"/>
     <!-- launch the UR3 driver and Plannung -->
-    <include file="$(find melkroboter_ur3_moveit_config)/launch/melkroboter_ur3_moveit_planning_execution.launch" >
+    <include file="$(find melkroboter_ur3_moveit_config)/launch/melkroboter_ur3_moveit_planning_execution.launch">
         <arg name="sim" value="$(arg sim)"/>
         <arg name="robot_ip" value="$(arg robot_ip)"/>
     </include>
 
     <!-- Launch the astra camera -->
-    <include file="$(find astra_launch)/launch/astra.launch" >
+    <include file="$(find astra_launch)/launch/astra.launch">
         <arg name="depth_registration" value="true" />
     </include>
 
     <!-- Launch the used nodes -->
-    <node name="FilterNode" pkg="core" type="DepthFilter" launch-prefix="xterm -e" />
-    <node name="RotateNode" pkg="core" type="RotateCloud"  launch-prefix="xterm -e"/> 
-    <node name="SearchTeat" pkg="core" type="SearchTeat"  launch-prefix="xterm -e"/>
+    <node name="FilterNode" pkg="core" type="DepthFilter" launch-prefix="xterm -e">
+        <param name="minX" value="-1.0" />
+        <param name="maxX" value="1.0" />
+        <param name="minY" value="-0.2" />
+        <param name="maxY" value="0.8" />
+        <param name="minZ" value="-0.2" />
+        <param name="maxZ" value="0.8" />
+        <param name="input" value="/camera/depth_registered/points"/>
+        <param name="output" value="/cloud/filtered" />
+    </node>
+    <node name="RotateNode" pkg="core" type="RotateCloud" launch-prefix="xterm -e">
+        <param name="input" value="/cloud/filtered" />
+        <param name="output" value="/cloud/Rotated" />
+    </node>
+    <node name="FilterinBase" pkg="core" type="DepthFilter" output="screen">
+        <param name="minX" value="-1.0" />
+        <param name="maxX" value="5" />
+        <param name="minY" value="-5" />
+        <param name="maxY" value="5" />
+        <param name="minZ" value="-5" />
+        <param name="maxZ" value="0.55" />
+        <param name="input" value="/cloud/Rotated"/>
+        <param name="output" value="/cloud/RotatedFiltered" />
+    </node>
+
+    <node name="SearchTeat" pkg="core" type="SearchTeat" output="screen"/>
     <!-- Launch the RoboterNode in external console-->
-    <node name="RoboterNode" pkg="core" type="RoboterNode" launch-prefix="xterm -e"  />
+    <node name="RoboterNode" pkg="core" type="RoboterNode" launch-prefix="xterm -e" />
 </launch>

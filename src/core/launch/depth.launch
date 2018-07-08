@@ -1,14 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <launch>
+   <!--
   <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen" />
 
-  <!-- Run a passthrough filter to clean NaNs -->
+   Run a passthrough filter to clean NaNs 
   <node pkg="nodelet" type="nodelet" name="passthrough" args="load pcl/PassThrough pcl_manager" output="screen">
     <remap from="~input" to="/camera/depth/points" />
     <rosparam>
       filter_field_name: z
-      filter_limit_min: 0.01
-      filter_limit_max: 1.5
+      filter_limit_min: -1
+      filter_limit_max: 0.55
       filter_limit_negative: False
+      input_frame: base_link
+      output_frame: base_link
     </rosparam>
-  </node>
+  </node> -->
+   <!-- Launch the used nodes -->
+   <node name="Hans" pkg="core" type="DepthFilter" output="screen">
+<param name="my_param" value="HansASD"/>
+   </node>
+      <node name="peter" pkg="core" type="DepthFilter" output="screen">
+<param name="my_param" value="peterASD"/>
+   </node>
 </launch>

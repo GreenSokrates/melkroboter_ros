@@ -22,7 +22,7 @@ class RotateCloud
 	Eigen::Matrix4f transformation;
 
   public:
-	RotateCloud(ros::NodeHandle *nodehandle);
+	RotateCloud(ros::NodeHandle *nodehandle, std::string in, std::string out);
 	virtual ~RotateCloud(){};
 
   private:
@@ -32,8 +32,8 @@ class RotateCloud
 	tf::TransformListener *listener;
 
 	// Initializing Methods
-	void initializeSubscribers();
-	void initializePublishers();
+	void initializeSubscribers(std::string in);
+	void initializePublishers(std::string out);
 
 	void cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg);
 };

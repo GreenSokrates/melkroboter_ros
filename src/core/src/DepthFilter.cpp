@@ -1,29 +1,33 @@
 #include <core/DepthFilter.h>
 
-DepthFilter::DepthFilter(ros::NodeHandle *nodehandle, float minX, float maxX,
-						 float minY, float maxY, float minZ, float maxZ)
+DepthFilter::DepthFilter(ros::NodeHandle *nodehandle, std::string in,
+						 std::string out, float &minX, float &maxX, float &minY,
+						 float &maxY, float &minZ, float &maxZ)
 	: nh_(*nodehandle)
 {
+
 	minX_ = minX;
 	maxX_ = maxX;
 	minY_ = minY;
 	maxY_ = maxY;
 	minZ_ = minZ;
 	maxZ_ = maxZ;
-	initializePublishers();
-	initializeSubscribers();
+	initializeSubscribers(in);
+	initializePublishers(out);
+	ROS_INFO("Setting up filter with: X-> %f, %f, Y -> %f, %f, Z-> %f, %f",
+			 minX_, maxX_, minY_, maxY_, minZ_, maxZ_);
 }
 
-void DepthFilter::initializePublishers()
+void DepthFilter::initializeSubscribers(std::string &in)
 {
-	pub_ = nh_.advertise<sensor_msgs::PointCloud2>(
-		"/cloud/filtered", 1, true);
+	sub_ = nh_.subscribe(in, 1, &DepthFilter::DepthFilter::cloud_cb_, this);
+	ROS_INFO("Subscribing on: %s", in.c_str());
 }
 
-void DepthFilter::initializeSubscribers()
+void DepthFilter::initializePublishers(std::string &out)
 {
-	sub_ = nh_.subscribe("/camera/depth_registered/points", 1,
-						 &DepthFilter::DepthFilter::cloud_cb_, this);
+	pub_ = nh_.advertise<sensor_msgs::PointCloud2>(out, 1, true);
+	ROS_INFO("Publishing on: %s", out.c_str());
 }
 
 void DepthFilter::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg)
@@ -69,10 +73,27 @@ int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "DepthFilterNode");
 	ros::NodeHandle nh;
-	DepthFilter depthFilter(&nh, -1.0, 1.0, -0.2, 0.8, 0.2, 0.8);
+
+	float minX, minY, minZ, maxX, maxY, maxZ;
+	std::string in;
+	std::string out;
+	std::string nodename = ros::this_node::getName();
+	bool status;
+
+	// Getting the Parameters from the launch file
+	nh.getParam(nodename + "/minX", minX);
+	nh.getParam(nodename + "/maxX", maxX);
+	nh.getParam(nodename + "/minY", minY);
+	nh.getParam(nodename + "/maxY", maxY);
+	nh.getParam(nodename + "/minZ", minZ);
+	nh.getParam(nodename + "/maxZ", maxZ);
+	nh.getParam(nodename + "/input", in);
+	nh.getParam(nodename + "/output", out);
+
+	DepthFilter depthFilter(&nh, in, out, minX, maxX, minY, maxY, minZ, maxZ);
 
 	ros::Rate loop_rate(30); // Freq in Hz
-	ROS_INFO("DepthFilterNode is up");
+	ROS_INFO("DepthFilterNode // is up");
 	while (ros::ok())
 	{
 		ros::spinOnce();

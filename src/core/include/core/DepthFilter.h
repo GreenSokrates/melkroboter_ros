@@ -12,28 +12,30 @@
 
 typedef pcl::PointXYZ PointT;
 
-class DepthFilter {
+class DepthFilter
+{
 
-public:
-  DepthFilter(ros::NodeHandle *nodehandle, float minX, float maxX, float minY,
-              float maxY, float minZ, float maxZ);
-  virtual ~DepthFilter(){};
+  public:
+	DepthFilter(ros::NodeHandle *nodehandle, std::string in, std::string out,
+				float &minX, float &maxX, float &minY, float &maxY, float &minZ,
+				float &maxZ);
+	virtual ~DepthFilter(){};
 
-private:
-  ros::NodeHandle nh_;
-  ros::Publisher pub_;
-  ros::Subscriber sub_;
-  std::string FieldDirection_;
-  float minX_;
-  float maxX_;
-  float minY_;
-  float maxY_;
-  float minZ_;
-  float maxZ_;
+  private:
+	ros::NodeHandle nh_;
+	ros::Publisher pub_;
+	ros::Subscriber sub_;
+	std::string FieldDirection_;
+	float minX_;
+	float maxX_;
+	float minY_;
+	float maxY_;
+	float minZ_;
+	float maxZ_;
 
-  void initializePublishers();
-  void initializeSubscribers();
-  void cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg);
+	void initializePublishers(std::string &out);
+	void initializeSubscribers(std::string &in);
+	void cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg);
 };
 
 #endif /*DEPTH_FILTER_H_ */
