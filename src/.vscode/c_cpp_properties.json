@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/controller/melkroboter_ros/devel/include",
+                "/opt/ros/kinetic/include",
+                "/home/controller/melkroboter_ros/src/orbbec_camera/ros_astra_camera/include",
+                "/home/controller/melkroboter_ros/src/core/include",
+                "/home/controller/melkroboter_ros/src/jog_arm/include",
+                "/home/controller/melkroboter_ros/src/ur_modern_driver/include",
+                "/usr/include"
+            ],
+            "name": "Linux",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}

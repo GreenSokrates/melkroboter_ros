@@ -1,7 +1,14 @@
+/**
+ * @brief 
+ * 
+ * @file DepthFilter.cpp
+ * @author Luis Meier
+ * @date 2018-07-09
+ */
 #include <core/DepthFilter.h>
 
-DepthFilter::DepthFilter(ros::NodeHandle *nodehandle, std::string in,
-						 std::string out, float &minX, float &maxX, float &minY,
+DepthFilter::DepthFilter(ros::NodeHandle *nodehandle, std::string subscribepath,
+						 std::string publishpath, float &minX, float &maxX, float &minY,
 						 float &maxY, float &minZ, float &maxZ)
 	: nh_(*nodehandle)
 {
@@ -12,8 +19,8 @@ DepthFilter::DepthFilter(ros::NodeHandle *nodehandle, std::string in,
 	maxY_ = maxY;
 	minZ_ = minZ;
 	maxZ_ = maxZ;
-	initializeSubscribers(in);
-	initializePublishers(out);
+	initializeSubscribers(subscribepath);
+	initializePublishers(publishpath);
 	ROS_INFO("Setting up filter with: X-> %f, %f, Y -> %f, %f, Z-> %f, %f",
 			 minX_, maxX_, minY_, maxY_, minZ_, maxZ_);
 }

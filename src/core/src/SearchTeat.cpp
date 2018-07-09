@@ -1,3 +1,10 @@
+/**
+ * @brief
+ *
+ * @file DepthFilter.cpp
+ * @author Luis Meier
+ * @date 2018-07-09
+ */
 #include <core/SearchTeat.h>
 
 SearchTeat::SearchTeat(ros::NodeHandle *nodehandle, float gridSize, float teatDiameter, float teatLength)
@@ -28,10 +35,10 @@ void SearchTeat::initializePublishers()
 {
   ROS_INFO("Initializing Publishers");
   // Create a ROS publisher for the output point cloud
-  pub_teat_1 = nh_.advertise<geometry_msgs::PointStamped>("/melkroboter/teats/1", 1);
-  pub_teat_2 = nh_.advertise<geometry_msgs::PointStamped>("/melkroboter/teats/2", 1);
-  pub_teat_3 = nh_.advertise<geometry_msgs::PointStamped>("/melkroboter/teats/3", 1);
-  pub_teat_4 = nh_.advertise<geometry_msgs::PointStamped>("/melkroboter/teats/4", 1);
+  pub_teat_vl = nh_.advertise<geometry_msgs::PointStamped>("/melkroboter/teats/vl", 1);
+  pub_teat_vr = nh_.advertise<geometry_msgs::PointStamped>("/melkroboter/teats/vr", 1);
+  pub_teat_hl = nh_.advertise<geometry_msgs::PointStamped>("/melkroboter/teats/hl", 1);
+  pub_teat_hr = nh_.advertise<geometry_msgs::PointStamped>("/melkroboter/teats/hr", 1);
   pub_teat_counter = nh_.advertise<std_msgs::Int8>("/melkroboter/teats/counter", 1);
 }
 
@@ -51,10 +58,11 @@ bool SearchTeat::Service_cb_(core::TeatSearchService::Request &req, core::TeatSe
   return true;
 }
 
-bool SearchTeat::Searchloop()
+void SearchTeat::Searchloop()
 {
+  double startTime = ros::Time::now().toSec();
   // used datasets
-  geometry_msgs::PointStamped pointStamped;
+  std::vector<int> teatCandidates;
   pcl::PointCloud<PointT>::Ptr cloud_original(new pcl::PointCloud<PointT>());
   pcl::PointCloud<PointT>::Ptr cloud_freezed(new pcl::PointCloud<PointT>());
 
@@ -66,12 +74,11 @@ bool SearchTeat::Searchloop()
 
   // Freeze the newest cloud to process it
   pcl::copyPointCloud(*cloud_, *cloud_freezed);
-  getMinPoints(cloud_freezed);
+  teatCandidates = getMinPoints(cloud_freezed);
 
   // goes through all possible teat candidates if one is a teat the
   // coordinates of the tip get pushed back into the vectors for the new teats
   // and the teatCount gets incremented
-  double startTime = ros::Time::now().toSec();
   for (size_t i = 0; i < teatCandidates.size(); i++)
   {
 	if (isTeat(teatCandidates[i], cloud_freezed))
@@ -80,13 +87,6 @@ bool SearchTeat::Searchloop()
 	  xVector_new.push_back((cloud_freezed->points[teatCandidates[i]].x));
 	  yVector_new.push_back((cloud_freezed->points[teatCandidates[i]].y));
 	  zVector_new.push_back(cloud_freezed->points[teatCandidates[i]].z);
-
-	  pointStamped.header.frame_id = (*cloud_freezed).header.frame_id;
-	  pointStamped.header.stamp = ros::Time::now();
-	  pointStamped.point.x = (cloud_freezed->points[teatCandidates[i]].x);
-	  pointStamped.point.y = (cloud_freezed->points[teatCandidates[i]].y);
-	  pointStamped.point.z = (cloud_freezed->points[teatCandidates[i]].z);
-	  publishPoint(pointStamped, teatCount);
 	}
   }
   // Replace the old teat vectors with the new ones
@@ -95,34 +95,68 @@ bool SearchTeat::Searchloop()
   zVector = zVector_new;
   // Replace the counter for the teats
   teatCount = teatCount_new;
+
   double duration = ros::Time::now().toSec() - startTime;
   ROS_INFO("Found %i Teats in %f Seconds", teatCount, duration);
+
+  // Publish the teats only if more than 3 found
+  if (teatCount > 2)
+	publishTeats(cloud_freezed);
+
 #ifdef enable_visualizer_
-  updateCloud();
+  updateCloud(teatCandidates);
 #endif
 }
 
-void SearchTeat::publishPoint(geometry_msgs::PointStamped pointStamped, int count)
+void SearchTeat::publishTeats(pcl::PointCloud<PointT>::Ptr &cloud)
 {
+  // Calculate the middle point between all teats
+  PointT midPoint;
+  for (size_t i = 0; i < teatCount; i++)
+  {
+	midPoint.x += xVector[i];
+	midPoint.y += yVector[i];
+  }
+  midPoint.x = midPoint.x / teatCount;
+  midPoint.y = midPoint.y / teatCount;
+
+  geometry_msgs::PointStamped pointStamped;
+
+  for (size_t i = 0; i < teatCount; i++)
+  {
+	pointStamped.header.frame_id = (*cloud).header.frame_id;
+	pointStamped.header.stamp = pcl_conversions::fromPCL((*cloud).header.stamp);  // PCL header to ROS header
+	pointStamped.point.x = xVector[i];
+	pointStamped.point.y = yVector[i];
+	pointStamped.point.z = zVector[i];
+	if (xVector[i] < midPoint.x)  // Front teats
+	{
+	  if (yVector[i] < midPoint.y)
+	  {
+		pub_teat_vl.publish(pointStamped);
+	  }
+	  else
+	  {
+		pub_teat_vr.publish(pointStamped);
+	  }
+	}
+	else  // Rear teats
+	{
+	  if (yVector[i] < midPoint.y)
+	  {
+		pub_teat_hl.publish(pointStamped);
+	  }
+	  else
+	  {
+		pub_teat_hr.publish(pointStamped);
+	  }
+	}
+  }
+
+  // Publish the teatcount
   std_msgs::Int8 msg;
-  msg.data = count;
+  msg.data = teatCount;
   pub_teat_counter.publish(msg);
-  if (count == 1)
-  {
-	pub_teat_1.publish(pointStamped);
-  }
-  if (count == 2)
-  {
-	pub_teat_2.publish(pointStamped);
-  }
-  if (count == 3)
-  {
-	pub_teat_3.publish(pointStamped);
-  }
-  if (count == 4)
-  {
-	pub_teat_4.publish(pointStamped);
-  }
 }
 
 void SearchTeat::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg)
@@ -132,15 +166,17 @@ void SearchTeat::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg)
   pcl::fromROSMsg(*cloud_msg, *cloud_);
 }
 
-void SearchTeat::getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud)
+std::vector<int> SearchTeat::getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud)
 {
+  std::vector<int> teatCandidates_;
   double startTime = ros::Time::now().toSec();
   pcl::GridMinimum<PointT> gridMin(gridSize_);
   gridMin.setInputCloud(cloud);
-  gridMin.filter(teatCandidates);
+  gridMin.filter(teatCandidates_);
   double endTime = ros::Time::now().toSec();
   double usedTime = endTime - startTime;
-  ROS_INFO("Found %lu Candidates in %f Seconds", teatCandidates.size(), usedTime);
+  ROS_INFO("Found %lu Candidates in %f Seconds", teatCandidates_.size(), usedTime);
+  return teatCandidates_;
 }
 
 #ifdef enable_visualizer_
@@ -151,7 +187,7 @@ boost::shared_ptr<pcl::visualization::PCLVisualizer> SearchTeat::createViewer(st
   return (v);
 }
 
-void SearchTeat::updateCloud()
+void SearchTeat::updateCloud(std::vector<int> teatCandidates)
 {
   viewer->removeAllShapes();
   viewer->removeAllPointClouds();

@@ -1,3 +1,11 @@
+/**
+ * @brief 
+ * 
+ * @file DepthFilter.h
+ * @author your name
+ * @date 2018-07-09
+ */
+
 #ifndef DEPTH_FILTER_H_
 #define DEPTH_FILTER_H_
 
@@ -11,12 +19,28 @@
 #include <pcl_conversions/pcl_conversions.h>
 
 typedef pcl::PointXYZ PointT;
-
+/**
+ * @brief 
+ * 
+ */
 class DepthFilter
 {
 
   public:
-	DepthFilter(ros::NodeHandle *nodehandle, std::string in, std::string out,
+  /**
+   * @brief Construct a new Depth Filter object
+   * 
+   * @param nodehandle The ROS Nodehandle
+   * @param subscribepath String with where to Subscribe to
+   * @param publishpath 
+   * @param minX 
+   * @param maxX 
+   * @param minY 
+   * @param maxY 
+   * @param minZ 
+   * @param maxZ 
+   */
+	DepthFilter(ros::NodeHandle *nodehandle, std::string subscribepath, std::string publishpath,
 				float &minX, float &maxX, float &minY, float &maxY, float &minZ,
 				float &maxZ);
 	virtual ~DepthFilter(){};
@@ -32,7 +56,11 @@ class DepthFilter
 	float maxY_;
 	float minZ_;
 	float maxZ_;
-
+/**
+ * @brief 
+ * 
+ * @param out 
+ */
 	void initializePublishers(std::string &out);
 	void initializeSubscribers(std::string &in);
 	void cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg);

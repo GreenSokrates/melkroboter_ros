@@ -56,7 +56,7 @@ devel_isolated/
 /cfg/*.py
 
 # Ignore generated docs
-*.dox
+#*.dox
 *.wikidoc
 
 # eclipse stuff
@@ -84,3 +84,23 @@ qtcreator-*
 # Catkin custom files
 CATKIN_IGNORE
 
+
+# Doxygen
+*~
+.*sw?
+\#*
+.DS_Store
+
+*.rej
+*.orig
+
+*.pro
+/packages/rpm/doxygen.spec
+*.idb
+*.pdb
+
+/doxygen_docs
+/doxygen.tag
+/build*
+/html/*
+/latex/*
