@@ -12,10 +12,15 @@
                 "/home/controller/melkroboter_ros/src/core/include",
                 "/home/controller/melkroboter_ros/src/jog_arm/include",
                 "/home/controller/melkroboter_ros/src/ur_modern_driver/include",
-                "/usr/include"
+                "/usr/include",
+                "/usr/include/pcl-1.7",
+                "/usr/include/eigen3"
             ],
             "name": "Linux",
-            "intelliSenseMode": "clang-x64"
+            "intelliSenseMode": "clang-x64",
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
         }
     ],
     "version": 4

@@ -100,7 +100,7 @@ int main(int argc, char **argv)
 	DepthFilter depthFilter(&nh, in, out, minX, maxX, minY, maxY, minZ, maxZ);
 
 	ros::Rate loop_rate(30); // Freq in Hz
-	ROS_INFO("DepthFilterNode // is up");
+	ROS_INFO("DepthFilterNode is up");
 	while (ros::ok())
 	{
 		ros::spinOnce();

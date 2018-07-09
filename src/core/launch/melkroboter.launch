@@ -13,17 +13,17 @@
     </include>
 
     <!-- Launch the used nodes -->
-    <node name="FilterNode" pkg="core" type="DepthFilter" launch-prefix="xterm -e">
+    <node name="FilterNode" pkg="core" type="DepthFilter" output="screen">
         <param name="minX" value="-1.0" />
         <param name="maxX" value="1.0" />
         <param name="minY" value="-0.2" />
         <param name="maxY" value="0.8" />
         <param name="minZ" value="-0.2" />
         <param name="maxZ" value="0.8" />
-        <param name="input" value="/camera/depth_registered/points"/>
+        <param name="input" value="/camera/depth_registered/points" />
         <param name="output" value="/cloud/filtered" />
     </node>
-    <node name="RotateNode" pkg="core" type="RotateCloud" launch-prefix="xterm -e">
+    <node name="RotateNode" pkg="core" type="RotateCloud" output="screen" >
         <param name="input" value="/cloud/filtered" />
         <param name="output" value="/cloud/Rotated" />
     </node>

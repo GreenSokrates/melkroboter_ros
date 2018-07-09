@@ -39,7 +39,7 @@ void SearchTeat::initializePublishers()
   pub_teat_vr = nh_.advertise<geometry_msgs::PointStamped>("/melkroboter/teats/vr", 1);
   pub_teat_hl = nh_.advertise<geometry_msgs::PointStamped>("/melkroboter/teats/hl", 1);
   pub_teat_hr = nh_.advertise<geometry_msgs::PointStamped>("/melkroboter/teats/hr", 1);
-  pub_teat_counter = nh_.advertise<std_msgs::Int8>("/melkroboter/teats/counter", 1);
+  pub_teat_counter = nh_.advertise<core::teatCount>("/melkroboter/teats/counter", 1);
 }
 
 void SearchTeat::initializeServices()
@@ -51,11 +51,15 @@ void SearchTeat::initializeServices()
 bool SearchTeat::Service_cb_(core::TeatSearchService::Request &req, core::TeatSearchService::Response &res)
 {
   ROS_INFO("Service CB");
-  res.count = teatCount;
-  res.x = xVector;
-  res.y = yVector;
-  res.z = zVector;
+  maxTeatCount = 0;
   return true;
+}
+
+void SearchTeat::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg)
+{
+  // Convert from ROS to PCL type
+  cloud_.reset(new pcl::PointCloud<PointT>());
+  pcl::fromROSMsg(*cloud_msg, *cloud_);
 }
 
 void SearchTeat::Searchloop()
@@ -77,7 +81,7 @@ void SearchTeat::Searchloop()
   teatCandidates = getMinPoints(cloud_freezed);
 
   // goes through all possible teat candidates if one is a teat the
-  // coordinates of the tip get pushed back into the vectors for the new teats
+  // coordinates of the tip get pushed back into the vectors
   // and the teatCount gets incremented
   for (size_t i = 0; i < teatCandidates.size(); i++)
   {
@@ -153,17 +157,13 @@ void SearchTeat::publishTeats(pcl::PointCloud<PointT>::Ptr &cloud)
 	}
   }
 
-  // Publish the teatcount
-  std_msgs::Int8 msg;
-  msg.data = teatCount;
+  // Publish the teatcount and maxTeatCount
+  if (teatCount > maxTeatCount)
+	maxTeatCount = teatCount;
+  core::teatCount msg;
+  msg.count = teatCount;
+  msg.maxCount = maxTeatCount;
   pub_teat_counter.publish(msg);
-}
-
-void SearchTeat::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg)
-{
-  // Convert from ROS to PCL type
-  cloud_.reset(new pcl::PointCloud<PointT>());
-  pcl::fromROSMsg(*cloud_msg, *cloud_);
 }
 
 std::vector<int> SearchTeat::getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud)

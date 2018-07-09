@@ -24,5 +24,6 @@
         "thread": "cpp",
         "cinttypes": "cpp",
         "typeindex": "cpp"
-    }
+    },
+    "C_Cpp.clang_format_fallbackStyle": "file"
 }

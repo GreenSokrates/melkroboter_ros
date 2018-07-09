@@ -16,7 +16,6 @@
 #include <geometry_msgs/PointStamped.h>
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
-#include <std_msgs/Int8.h>
 
 // PCL specific includes
 #include <pcl/filters/grid_minimum.h>
@@ -30,6 +29,9 @@
 
 // Includes for Service
 #include <core/TeatSearchService.h>
+
+// Includes for messages
+#include <core/teatCount.h>
 
 typedef pcl::PointXYZ PointT;
 struct Vec3
@@ -75,6 +77,7 @@ private:
   std::vector<double> yVector;
   std::vector<double> zVector;
   int teatCount;
+  int maxTeatCount;
 
   // Initializing ROS Methods
 
