@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="https://ros.org/wiki/xacro">
+   <xacro:macro name="melkarm" params="prefix">
+      <link name="${prefix}melkarm_plate">
+         <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+               <mesh filename="package://melkroboter_support/mesh/Melkarm_Platte.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="">
+               <color rgba="0.7372549 0.3490196 0.1607843 1" />
+            </material>
+         </visual>
+         <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+               <mesh filename="package://melkroboter_support/mesh/Melkarm_Platte.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="yellow">
+               <color rgba="1 1 0 0.3" />
+            </material>
+         </collision>
+      </link>
+      <joint name="platte_to_DuriPodHalterung" type="fixed">
+         <parent link="${prefix}melkarm_plate" />
+         <child link="${prefix}melkarm_camera_holder" />
+         <origin xyz="0.045 0.0 0.005" rpy="0 0 -1.57" />
+      </joint>
+      <link name="${prefix}melkarm_camera_holder">
+         <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+               <mesh filename="package://melkroboter_support/mesh/DuripodHalterung-v2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="">
+               <color rgba="0.7372549 0.3490196 0.1607843 1" />
+            </material>
+         </visual>
+         <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+               <mesh filename="package://melkroboter_support/mesh/DuripodHalterung-v2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="yellow">
+               <color rgba="1 1 0 0.3" />
+            </material>
+         </collision>
+      </link>
+      <joint name="platte_to_becherhalter" type="fixed">
+         <parent link="${prefix}melkarm_plate" />
+         <child link="${prefix}melkarm_becherhalter" />
+         <origin xyz="0.472 0.035 -0.015" rpy="0 0 -1.57" />
+      </joint>
+      <link name="${prefix}melkarm_becherhalter">
+         <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+               <mesh filename="package://melkroboter_support/mesh/Becherhalter_Mockup.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="">
+               <color rgba="0.7372549 0.3490196 0.1607843 1" />
+            </material>
+         </visual>
+         <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+               <mesh filename="package://melkroboter_support/mesh/Becherhalter_Mockup.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="yellow">
+               <color rgba="1 1 0 0.3" />
+            </material>
+         </collision>
+      </link>
+      <joint name="becherhalter_to_melkbecher" type="fixed">
+         <parent link="${prefix}melkarm_becherhalter" />
+         <child link="${prefix}melkarm_melkbecher" />
+         <origin xyz="0.04 0.07 -0.040" rpy="0 0 0" />
+      </joint>
+      <link name="${prefix}melkarm_melkbecher">
+         <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+               <mesh filename="package://melkroboter_support/mesh/Melkbecher.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="">
+               <color rgba="0.7372549 0.3490196 0.1607843 1" />
+            </material>
+         </visual>
+         <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+               <mesh filename="package://melkroboter_support/mesh/Melkbecher.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="yellow">
+               <color rgba="1 1 0 0.3" />
+            </material>
+         </collision>
+      </link>
+      <!-- teatcup tool frame -->
+      <link name="${prefix}teatcup_tcp">
+         <visual>
+            <geometry>
+               <sphere radius="0.002" />
+            </geometry>
+            <material name="white">
+               <color rgba="1 1 1 0.5" />
+            </material>
+         </visual>
+         <collision>
+            <geometry>
+               <sphere radius="0.00000001" />
+            </geometry>
+         </collision>
+      </link>
+      <joint name="${prefix}becher_to_teatcuptcp" type="fixed">
+         <parent link="${prefix}melkarm_melkbecher" />
+         <child link="${prefix}teatcup_tcp" />
+         <origin xyz="0 0 0.170" rpy="0 0 0" />
+      </joint>
+      <!-- define Camera link -->
+      <link name="camera_link">
+      <visual>
+         <geometry>
+            <box size="0.032 0.120 0.038" />
+         </geometry>
+         </visual>
+         <collision>
+            <geometry>
+               <box size="0.032 0.120 0.038" />
+            </geometry>
+         </collision>
+         <material name="yellow">
+            <color rgba="1 1 0 0.3" />
+         </material>
+      </link>
+      <joint name="robot_to_camera" type="fixed">
+         <parent link="melkarm_camera_holder" />
+         <child link="camera_link" />
+         <origin xyz="${0.00} ${0.0373-0.0095} ${0.020+0.01645}" rpy="0 -0.523599 1.57" />
+      </joint>
+   </xacro:macro>
+</robot>

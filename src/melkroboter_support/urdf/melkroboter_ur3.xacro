@@ -3,7 +3,7 @@
 
     <!-- Include the Robot and the tool -->
     <xacro:include filename="$(find ur_description)/urdf/ur3.urdf.xacro" />
-    <xacro:include filename="$(find melkroboter_support)/urdf/melkarm.xacro" />
+    <xacro:include filename="$(find melkroboter_support)/urdf/melkarm_new.xacro" />
 
     <!-- World link -->
     <link name="world" />

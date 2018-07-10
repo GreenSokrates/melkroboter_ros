@@ -1,3 +1,10 @@
+/**
+ * @brief 
+ * 
+ * @file RotateCloud.cpp
+ * @author Luis Meier
+ * @date 2018-07-10
+ */
 #include <core/RotateCloud.h>
 
 RotateCloud::RotateCloud(ros::NodeHandle *nodehandle, std::string in,
@@ -55,10 +62,10 @@ void RotateCloud::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg)
 {
 	sensor_msgs::PointCloud2 output;
 
-	listener->waitForTransform("/base", (*cloud_msg).header.frame_id,
+	listener->waitForTransform("/world", (*cloud_msg).header.frame_id,
 							   (*cloud_msg).header.stamp, ros::Duration(5.0));
 
-	pcl_ros::transformPointCloud("/base", *cloud_msg, output, *listener);
+	pcl_ros::transformPointCloud("/world", *cloud_msg, output, *listener);
 
 	pub_.publish(output);
 }

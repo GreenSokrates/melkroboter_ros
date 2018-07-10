@@ -23,10 +23,12 @@
         <param name="input" value="/camera/depth_registered/points" />
         <param name="output" value="/cloud/filtered" />
     </node>
+
     <node name="RotateNode" pkg="core" type="RotateCloud" output="screen" >
         <param name="input" value="/cloud/filtered" />
         <param name="output" value="/cloud/Rotated" />
     </node>
+    
     <node name="FilterinBase" pkg="core" type="DepthFilter" output="screen">
         <param name="minX" value="-1.0" />
         <param name="maxX" value="5" />

@@ -49,6 +49,7 @@
     <disable_collisions link1="camera_link" link2="melkarm_camera_holder" reason="Adjacent" />
     <disable_collisions link1="camera_link" link2="melkarm_melkbecher" reason="Never" />
     <disable_collisions link1="camera_link" link2="melkarm_plate" reason="Never" />
+    <disable_collisions link1="camera_link" link2="table" reason="Default" />
     <disable_collisions link1="camera_link" link2="teatcup_tcp" reason="Never" />
     <disable_collisions link1="camera_link" link2="wrist_1_link" reason="Never" />
     <disable_collisions link1="camera_link" link2="wrist_2_link" reason="Never" />
@@ -76,6 +77,7 @@
     <disable_collisions link1="melkarm_becherhalter" link2="wrist_3_link" reason="Never" />
     <disable_collisions link1="melkarm_camera_holder" link2="melkarm_melkbecher" reason="Never" />
     <disable_collisions link1="melkarm_camera_holder" link2="melkarm_plate" reason="Adjacent" />
+    <disable_collisions link1="melkarm_camera_holder" link2="table" reason="Default" />
     <disable_collisions link1="melkarm_camera_holder" link2="teatcup_tcp" reason="Never" />
     <disable_collisions link1="melkarm_camera_holder" link2="wrist_1_link" reason="Never" />
     <disable_collisions link1="melkarm_camera_holder" link2="wrist_2_link" reason="Never" />

@@ -1,3 +1,10 @@
+/**
+ * @brief 
+ * 
+ * @file RemoveLegs.cpp
+ * @author Luis Meier
+ * @date 2018-07-10
+ */
 #include <core/RemoveLegs.h>
 
 RemoveLegs::RemoveLegs()

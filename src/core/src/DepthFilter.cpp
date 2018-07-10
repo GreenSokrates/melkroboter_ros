@@ -3,7 +3,7 @@
  * 
  * @file DepthFilter.cpp
  * @author Luis Meier
- * @date 2018-07-09
+ * @date 2018-07-10
  */
 #include <core/DepthFilter.h>
 

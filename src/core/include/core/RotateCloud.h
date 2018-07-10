@@ -8,34 +8,37 @@
 #include <tf/transform_listener.h>
 
 // PCL specific includes
-#include <iostream>
 #include <pcl/common/transforms.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl_conversions/pcl_conversions.h>
+#include <iostream>
 
 typedef pcl::PointXYZ PointT;
-
+/**
+ * @brief Rotates the input cloud into the world coordinate system and publishes it in the output msg
+ *
+ */
 class RotateCloud
 {
-	float rotateAngle;
-	Eigen::Matrix4f transformation;
+  float rotateAngle;
+  Eigen::Matrix4f transformation;
 
-  public:
-	RotateCloud(ros::NodeHandle *nodehandle, std::string in, std::string out);
-	virtual ~RotateCloud(){};
+public:
+  RotateCloud(ros::NodeHandle *nodehandle, std::string in, std::string out);
+  virtual ~RotateCloud(){};
 
-  private:
-	ros::NodeHandle nh_;
-	ros::Publisher pub_;
-	ros::Subscriber sub_;
-	tf::TransformListener *listener;
+private:
+  ros::NodeHandle nh_;
+  ros::Publisher pub_;
+  ros::Subscriber sub_;
+  tf::TransformListener *listener;
 
-	// Initializing Methods
-	void initializeSubscribers(std::string in);
-	void initializePublishers(std::string out);
+  // Initializing Methods
+  void initializeSubscribers(std::string in);
+  void initializePublishers(std::string out);
 
-	void cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg);
+  void cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg);
 };
 
 #endif /* ROTATE_CLOUD_H_ */
