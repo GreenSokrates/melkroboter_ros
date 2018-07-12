@@ -45,7 +45,7 @@ void DepthFilter::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg)
 	pcl::PointCloud<PointT>::Ptr cloud_y(new pcl::PointCloud<PointT>());
 	pcl::PointCloud<PointT>::Ptr cloud_z(new pcl::PointCloud<PointT>());
 
-	// Convert to PCL data type
+	// Convert to PCL data type from ROS data type
 	pcl::fromROSMsg(*cloud_msg, *cloud_in);
 
 	pcl::PassThrough<PointT> passFilter;
