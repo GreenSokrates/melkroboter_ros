@@ -13,6 +13,8 @@
 #include <pcl/point_types.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <iostream>
+// Voxel grid
+#include <pcl/filters/voxel_grid.h>
 
 typedef pcl::PointXYZ PointT;
 /**

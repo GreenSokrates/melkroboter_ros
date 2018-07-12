@@ -178,8 +178,8 @@ std::vector<int> SearchTeat::getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud)
 	gridMin.filter(teatCandidates_);
 	double endTime = ros::Time::now().toSec();
 	double usedTime = endTime - startTime;
-	ROS_INFO("Found %lu Candidates in %f Seconds", teatCandidates_.size(),
-			 usedTime);
+	//ROS_INFO("Found %lu Candidates in %f Seconds", teatCandidates_.size(),
+	//		 usedTime);
 	return teatCandidates_;
 }
 
@@ -229,7 +229,7 @@ bool SearchTeat::isTeat(int indexPoint, pcl::PointCloud<PointT>::Ptr &cloud)
 	PointT startP, searchP, endP;
 
 	// Search for nearest Neighbour
-	int K = 1000; // number of neighours
+	int K = 250; // number of neighours
 	std::vector<int> pointIdxSearch(K);
 	std::vector<float> pointIdxSqDistance(K);
 	kdtree.setInputCloud(cloud);
@@ -304,7 +304,7 @@ int main(int argc, char **argv)
 	spinner.start();*/
 
 	ros::Duration(5).sleep(); // sleep for half a second
-	SearchTeat searchTeat(&nh, 0.08, 30.0, 50.0);
+	SearchTeat searchTeat(&nh, 0.08, 30.0, 50.0); // GridSize, TeatDiameter, TeatLength
 
 	ros::Rate loop_rate(30); // Freq in Hz
 	ROS_INFO("SearchTeatNode is up");
