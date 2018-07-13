@@ -67,9 +67,14 @@ private:
 
   // Parameters for teatsearch
   float gridSize_;
-  float teatDiameter_;
+  float teatRadius_;
+  float teatRadiusSq_;
   float teatLength_;
 
+  /**
+   * @brief Most recent cloud from the subscriber
+   *
+   */
   pcl::PointCloud<PointT>::Ptr cloud_;
 
   // Vectors to store the teat coordinates
@@ -84,6 +89,12 @@ private:
   void initializeSubscribers();
   void initializePublishers();
   void initializeServices();
+
+  /*std::vector<int>*/ bool segmentation(int seedIdxPoint, pcl::PointCloud<PointT>::Ptr &cloud);
+void validatePoint(int validatePointIdx, Vec3 &teatAxisVector,
+							   PointT &teatStartPoint,
+							   pcl::PointCloud<PointT>::Ptr &cloud,
+							   bool &inheightbounds, bool &inradiusbounds);
 
   /**
    * @brief Publishes the Tip position of all 4 teats

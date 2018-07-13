@@ -18,7 +18,7 @@
         <param name="maxX" value="1.0" />
         <param name="minY" value="-0.2" />
         <param name="maxY" value="0.8" />
-        <param name="minZ" value="-0.2" />
+        <param name="minZ" value="0.15" />
         <param name="maxZ" value="0.8" />
         <param name="input" value="/camera/depth_registered/points" />
         <param name="output" value="/cloud/filtered" />
@@ -40,7 +40,7 @@
         <param name="output" value="/cloud/RotatedFiltered" />
     </node>
 
-    <node name="SearchTeat" pkg="core" type="SearchTeat" output="screen"/>
+<node name="SearchTeat" pkg="core" type="SearchTeat" output="screen" launch-prefix="xterm -e gdb --args" />
     <!-- Launch the RoboterNode in external console-->
     <node name="RoboterNode" pkg="core" type="RoboterNode" launch-prefix="xterm -e" />
 </launch>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+   <!-- Launch the SearchNode -->
+   <node name="SearchTeat" pkg="core" type="SearchTeat" output="screen" launch-prefix="xterm -e gdb --args" />
+</launch>

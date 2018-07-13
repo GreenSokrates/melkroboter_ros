@@ -4,6 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /MotionPlanning1
         - /MotionPlanning1/Planning Request1
         - /TF1/Frames1
         - /TF1/Tree1
@@ -178,7 +179,7 @@ Visualization Manager:
         Interactive Marker Size: 0.200000003
         Joint Violation Color: 255; 0; 255
         Planning Group: teatcup_urplaner
-        Query Goal State: true
+        Query Goal State: false
         Query Start State: false
         Show Workspace: false
         Start State Alpha: 1
@@ -330,7 +331,7 @@ Visualization Manager:
       Size (Pixels): 1
       Size (m): 0.00999999978
       Style: Points
-      Topic: /camera/depth_registered/points
+      Topic: /cloud/RotatedFiltered
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -350,10 +351,10 @@ Visualization Manager:
         MotionPlanning: false
         PointCloud2: true
         TF: false
-        Teat1: true
-        Teat2: true
-        Teat3: true
-        Teat4: true
+        Teat_hl: true
+        Teat_hr: true
+        Teat_vl: true
+        Teat_vr: true
         Value: true
       Zoom Factor: 1
     - Alpha: 1
@@ -431,10 +432,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.274407655
+      Pitch: 0.474407494
       Target Frame: world
       Value: XYOrbit (rviz)
-      Yaw: 2.61926389
+      Yaw: 4.09926033
     Saved: ~
 Window Geometry:
   Camera:
@@ -455,4 +456,4 @@ Window Geometry:
     collapsed: false
   Width: 1633
   X: 1071
-  Y: 254
+  Y: 143

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<launch>
-   <!-- Launch the SearchNode -->
-   <node name="SearchNode" pkg="core" type="SearchNode" output="screen" launch-prefix="gdb -ex run --args" />
-</launch>

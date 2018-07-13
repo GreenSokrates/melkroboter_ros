@@ -72,20 +72,20 @@ void RotateCloud::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg)
 
 	pcl_conversions::toPCL(mid, *pclCloud);
 
-	std::cerr << "PointCloud before filtering: "
+	/*std::cerr << "PointCloud before filtering: "
 			  << pclCloud->width * pclCloud->height << " data points ("
 			  << pcl::getFieldsList(*pclCloud) << ")." << std::endl;
-
+*/
 	pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
 	sor.setInputCloud(pclCloud);
 	sor.setLeafSize(0.0025, 0.0025, 0.0025);
 	sor.filter(*cloud_filtered);
-
+/*
 	std::cerr << "PointCloud after filtering: "
 			  << cloud_filtered->width * cloud_filtered->height
 			  << " data points (" << pcl::getFieldsList(*cloud_filtered) << ")."
 			  << std::endl;
-
+*/
 	pcl_conversions::fromPCL(*cloud_filtered, output);
 
 	pub_.publish(output);
