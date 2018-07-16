@@ -23,7 +23,9 @@
         "system_error": "cpp",
         "thread": "cpp",
         "cinttypes": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "core": "cpp",
+        "numericaldiff": "cpp"
     },
     "C_Cpp.clang_format_fallbackStyle": "file"
 }

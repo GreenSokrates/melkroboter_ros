@@ -27,6 +27,8 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <iostream>
 
+#include <Eigen/Core>
+
 // Includes for Service
 #include <core/TeatSearchService.h>
 
@@ -49,8 +51,10 @@ public:
   /**
    * @brief Searches for teats
    *
-   * Everytime this function gets called it freezes the current Pointcloud and searches in it for teats. The found teats
-   * get published. This function should be called with the refresh rate of the camera (Orbbec Astra 30Hz)
+   * Everytime this function gets called it freezes the current Pointcloud and
+   * searches in it for teats. The found teats
+   * get published. This function should be called with the refresh rate of
+   * the camera (Orbbec Astra 30Hz)
    */
   void Searchloop();
 
@@ -90,11 +94,13 @@ private:
   void initializePublishers();
   void initializeServices();
 
-  /*std::vector<int>*/ bool segmentation(int seedIdxPoint, pcl::PointCloud<PointT>::Ptr &cloud);
-void validatePoint(int validatePointIdx, Vec3 &teatAxisVector,
-							   PointT &teatStartPoint,
-							   pcl::PointCloud<PointT>::Ptr &cloud,
-							   bool &inheightbounds, bool &inradiusbounds);
+  bool segmentation(int seedIdxPoint, pcl::PointCloud<PointT>::Ptr &cloud);
+
+  void validatePoint(int validatePointIdx, Vec3 &teatAxisVector, PointT &teatStartPoint,
+					 pcl::PointCloud<PointT>::Ptr &cloud, bool &inheightbounds, bool &inradiusbounds);
+
+  void updateTeatVector(Vec3 &teatAxisVector, std::vector<int> teatPoints, pcl::PointCloud<PointT>::Ptr &cloud,
+						PointT &teatStartPoint);
 
   /**
    * @brief Publishes the Tip position of all 4 teats
@@ -142,7 +148,10 @@ void validatePoint(int validatePointIdx, Vec3 &teatAxisVector,
 #ifdef enable_visualizer_
   boost::shared_ptr<pcl::visualization::PCLVisualizer> createViewer(std::string name);
   boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
-  void updateCloud(std::vector<int> teatCandidates);
+  void updateCloud(std::vector<int> teatCandidates, pcl::PointCloud<PointT>::Ptr &cloud);
+
+public:
+  void spinViewer();
 #endif
 };
 
