@@ -25,6 +25,7 @@
 #include <pcl/point_types.h>
 #include <pcl/visualization/cloud_viewer.h>
 #include <pcl_conversions/pcl_conversions.h>
+#include <fstream>
 #include <iostream>
 
 #include <Eigen/Core>
@@ -48,6 +49,7 @@ class SearchTeat
 public:
   SearchTeat(ros::NodeHandle *nodehandle, float gridSize, float teatDiameter, float teatLength);
   virtual ~SearchTeat(){};
+
   /**
    * @brief Searches for teats
    *
@@ -75,11 +77,8 @@ private:
   float teatRadiusSq_;
   float teatLength_;
 
-  /**
-   * @brief Most recent cloud from the subscriber
-   *
-   */
   pcl::PointCloud<PointT>::Ptr cloud_;
+  pcl::PointCloud<PointT>::Ptr cloud_freezed_;
 
   // Vectors to store the teat coordinates
   std::vector<double> xVector;
@@ -87,22 +86,25 @@ private:
   std::vector<double> zVector;
   int teatCount;
   int maxTeatCount;
+  Vec3 teatAxisVector_;
 
-  // Initializing ROS Methods
-
+  // Initializing ROS
   void initializeSubscribers();
   void initializePublishers();
   void initializeServices();
 
-  bool segmentation(int seedIdxPoint, pcl::PointCloud<PointT>::Ptr &cloud);
+  bool checkIfTeat(int seedIdxPoint);
 
-  void validatePoint(int validatePointIdx, Vec3 &teatAxisVector, PointT &teatStartPoint,
-                     pcl::PointCloud<PointT>::Ptr &cloud, bool &inheightbounds, bool &inradiusbounds);
+  void validatePoint(int validatePointIdx, PointT &teatStartPoint, bool &inheightbounds, bool &inradiusbounds);
 
-  void updateTeatVector(Vec3 &teatAxisVector, std::vector<int> teatPoints, pcl::PointCloud<PointT>::Ptr &cloud,
-                        PointT &teatStartPoint);
-                        
-  void lineFit(std::vector<Vec3> &c);
+  void segmentCloud(int segments, PointT startPoint, std::vector<int> &teatSegmentIdx,
+                    std::vector<std::vector<int>> &heightSegmentsIdx);
+
+  void updateTeatVector(std::vector<int> teatPoints, PointT &teatStartPoint);
+
+  PointT calcMidpoint(PointT startPoint, int segments, std::vector<int> &idxVector);
+
+  void lineFit(std::vector<PointT> &vec);
 
   /**
    * @brief Publishes the Tip position of all 4 teats
@@ -151,6 +153,7 @@ private:
   boost::shared_ptr<pcl::visualization::PCLVisualizer> createViewer(std::string name);
   boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
   void updateCloud(std::vector<int> teatCandidates, pcl::PointCloud<PointT>::Ptr &cloud);
+  void addPoint(PointT &point, std::string name);
 
 public:
   void spinViewer();
