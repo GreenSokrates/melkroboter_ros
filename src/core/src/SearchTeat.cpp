@@ -79,13 +79,13 @@ void SearchTeat::Searchloop()
   // and the teatCount gets incremented
   for (size_t i = 0; i < teatCandidates.size(); i++)
   {
-	if (segmentation(teatCandidates[i], cloud_freezed))
-	{
-	  teatCount_new++;
-	  xVector_new.push_back((cloud_freezed->points[teatCandidates[i]].x));
-	  yVector_new.push_back((cloud_freezed->points[teatCandidates[i]].y));
-	  zVector_new.push_back(cloud_freezed->points[teatCandidates[i]].z);
-	}
+    if (segmentation(teatCandidates[i], cloud_freezed))
+    {
+      teatCount_new++;
+      xVector_new.push_back((cloud_freezed->points[teatCandidates[i]].x));
+      yVector_new.push_back((cloud_freezed->points[teatCandidates[i]].y));
+      zVector_new.push_back(cloud_freezed->points[teatCandidates[i]].z);
+    }
   }
   // Replace the old teat vectors with the new ones
   xVector = xVector_new;
@@ -99,7 +99,7 @@ void SearchTeat::Searchloop()
 
   // Publish the teats only if more than 3 found
   if (teatCount > 2)
-	publishTeats(cloud_freezed);
+    publishTeats(cloud_freezed);
 
 #ifdef enable_visualizer_
 // updateCloud(teatCandidates);
@@ -112,8 +112,8 @@ void SearchTeat::publishTeats(pcl::PointCloud<PointT>::Ptr &cloud)
   PointT midPoint;
   for (size_t i = 0; i < teatCount; i++)
   {
-	midPoint.x += xVector[i];
-	midPoint.y += yVector[i];
+    midPoint.x += xVector[i];
+    midPoint.y += yVector[i];
   }
   midPoint.x = midPoint.x / teatCount;
   midPoint.y = midPoint.y / teatCount;
@@ -122,38 +122,38 @@ void SearchTeat::publishTeats(pcl::PointCloud<PointT>::Ptr &cloud)
 
   for (size_t i = 0; i < teatCount; i++)
   {
-	pointStamped.header.frame_id = (*cloud).header.frame_id;
-	pointStamped.header.stamp = pcl_conversions::fromPCL((*cloud).header.stamp);  // PCL header to ROS header
-	pointStamped.point.x = xVector[i];
-	pointStamped.point.y = yVector[i];
-	pointStamped.point.z = zVector[i];
-	if (xVector[i] < midPoint.x)  // Front teats
-	{
-	  if (yVector[i] < midPoint.y)
-	  {
-		pub_teat_vl.publish(pointStamped);
-	  }
-	  else
-	  {
-		pub_teat_vr.publish(pointStamped);
-	  }
-	}
-	else  // Rear teats
-	{
-	  if (yVector[i] < midPoint.y)
-	  {
-		pub_teat_hl.publish(pointStamped);
-	  }
-	  else
-	  {
-		pub_teat_hr.publish(pointStamped);
-	  }
-	}
+    pointStamped.header.frame_id = (*cloud).header.frame_id;
+    pointStamped.header.stamp = pcl_conversions::fromPCL((*cloud).header.stamp);  // PCL header to ROS header
+    pointStamped.point.x = xVector[i];
+    pointStamped.point.y = yVector[i];
+    pointStamped.point.z = zVector[i];
+    if (xVector[i] < midPoint.x)  // Front teats
+    {
+      if (yVector[i] < midPoint.y)
+      {
+        pub_teat_vl.publish(pointStamped);
+      }
+      else
+      {
+        pub_teat_vr.publish(pointStamped);
+      }
+    }
+    else  // Rear teats
+    {
+      if (yVector[i] < midPoint.y)
+      {
+        pub_teat_hl.publish(pointStamped);
+      }
+      else
+      {
+        pub_teat_hr.publish(pointStamped);
+      }
+    }
   }
 
   // Publish the teatcount and maxTeatCount
   if (teatCount > maxTeatCount)
-	maxTeatCount = teatCount;
+    maxTeatCount = teatCount;
   core::teatCount msg;
   msg.count = teatCount;
   msg.maxCount = maxTeatCount;
@@ -189,14 +189,14 @@ void SearchTeat::updateCloud(std::vector<int> teatCandidates, pcl::PointCloud<Po
   viewer->addPointCloud(cloud, "cloud");
   for (size_t i = 0; i < teatCandidates.size(); i++)
   {
-	std::stringstream stream;
-	stream << "teatnrs " << i;
-	std::string candidateNr = stream.str();
-	PointT point;
-	point = cloud->points[teatCandidates[i]];
+    std::stringstream stream;
+    stream << "teatnrs " << i;
+    std::string candidateNr = stream.str();
+    PointT point;
+    point = cloud->points[teatCandidates[i]];
 
-	viewer->addSphere(point, 0.008, 255, 0, 0, candidateNr);
-	// viewer->spinOnce();
+    viewer->addSphere(point, 0.008, 255, 0, 0, candidateNr);
+    // viewer->spinOnce();
   }
 }
 
@@ -217,7 +217,7 @@ bool SearchTeat::segmentation(int initialSeed, pcl::PointCloud<PointT>::Ptr &clo
   // Initializing seedpoint and mask
   PointT seedPoint, teatStartPoint, teatEndPoint, currentPoint;
   std::queue<int> searchMask;
-  std::vector<int> teatPoints;
+  std::vector<int> teatPointsIdx;
   searchMask.push(initialSeed);
 
   // Initializing ??
@@ -238,59 +238,59 @@ bool SearchTeat::segmentation(int initialSeed, pcl::PointCloud<PointT>::Ptr &clo
   // bounds
   while (!searchMask.empty())
   {
-	int currentMaskPoint = searchMask.front();
-	searchMask.pop();
+    int currentMaskPoint = searchMask.front();
+    searchMask.pop();
 
-	seedPoint = cloud->points[currentMaskPoint];
+    seedPoint = cloud->points[currentMaskPoint];
 
-	// The vectors where KNN indexes are stored
-	std::vector<int> pointIdxSearch(k);
-	std::vector<float> pointIdxSqDistance(k);
+    // The vectors where KNN indexes are stored
+    std::vector<int> pointIdxSearch(k);
+    std::vector<float> pointIdxSqDistance(k);
 
-	// Search the K nearest neighbours
-	if (kdtree.nearestKSearch(seedPoint, k, pointIdxSearch, pointIdxSqDistance) > 0)
-	{
-	  // Check every neighbour if it is inside the cylinder
-	  for (size_t j = 0; j < pointIdxSearch.size(); j++)
-	  {
-		bool inHeightBounds = true;
-		bool inRadiusBounds = true;
-		validatePoint(pointIdxSearch[j], teatAxisVector, teatStartPoint, cloud, inHeightBounds, inRadiusBounds);
+    // Search the K nearest neighbours
+    if (kdtree.nearestKSearch(seedPoint, k, pointIdxSearch, pointIdxSqDistance) > 0)
+    {
+      // Check every neighbour if it is inside the cylinder
+      for (size_t j = 0; j < pointIdxSearch.size(); j++)
+      {
+        bool inHeightBounds = true;
+        bool inRadiusBounds = true;
+        validatePoint(pointIdxSearch[j], teatAxisVector, teatStartPoint, cloud, inHeightBounds, inRadiusBounds);
 
-		if (inHeightBounds && inRadiusBounds)  // Point is inside Cylinder
-		{
-		  // Check if point allready belongs to teat, if not add it to
-		  // SearchMask and Teat
-		  if (std::find(teatPoints.begin(), teatPoints.end(), pointIdxSearch[j]) == teatPoints.end())
-		  {
-			teatPoints.push_back(pointIdxSearch[j]);
-			searchMask.push(pointIdxSearch[j]);
-			pointcounter++;
-		  }
-		}
-		// If a point is not inside the cylinder
-		// it's defenetly not a teat
-		if (!inRadiusBounds)
-		{
-		  return false;
-		}
-	  }
-	  updateTeatVector(teatAxisVector, teatPoints, cloud, teatStartPoint);
-	}
+        if (inHeightBounds && inRadiusBounds)  // Point is inside Cylinder
+        {
+          // Check if point allready belongs to teat, if not add it to
+          // SearchMask and Teat
+          if (std::find(teatPointsIdx.begin(), teatPointsIdx.end(), pointIdxSearch[j]) == teatPointsIdx.end())
+          {
+            teatPointsIdx.push_back(pointIdxSearch[j]);
+            searchMask.push(pointIdxSearch[j]);
+            pointcounter++;
+          }
+        }
+        // If a point is not inside the cylinder
+        // it's defenetly not a teat
+        if (!inRadiusBounds)
+        {
+          return false;
+        }
+      }
+      updateTeatVector(teatAxisVector, teatPointsIdx, cloud, teatStartPoint);
+    }
   }
   if (pointcounter > 150)
   {
-	updateCloud(teatPoints, cloud);
-	return true;
+    updateCloud(teatPointsIdx, cloud);
+    return true;
   }
   else
   {
-	return false;
+    return false;
   }
 }
 
 void SearchTeat::validatePoint(int validatePointIdx, Vec3 &teatAxisVector, PointT &teatStartPoint,
-							   pcl::PointCloud<PointT>::Ptr &cloud, bool &inHeightBounds, bool &inRadiusBounds)
+                               pcl::PointCloud<PointT>::Ptr &cloud, bool &inHeightBounds, bool &inRadiusBounds)
 {
   PointT validatePoint;
   Vec3 validatePointVector;
@@ -308,29 +308,30 @@ void SearchTeat::validatePoint(int validatePointIdx, Vec3 &teatAxisVector, Point
 
   // Dot Product between TeatAxis and searchPointVector
   dotProduct = (validatePointVector.x * teatAxisVector.x) + (validatePointVector.y * teatAxisVector.y) +
-			   (validatePointVector.z * teatAxisVector.z);
+               (validatePointVector.z * teatAxisVector.z);
 
   // validatePoint is not inside length bounds
   if (dotProduct < 0 || dotProduct > teatLengthSq)
   {
-	inHeightBounds = false;
+    inHeightBounds = false;
   }
 
   distanceSquared = ((validatePointVector.x * validatePointVector.x) + (validatePointVector.y * validatePointVector.y) +
-					 (validatePointVector.z * validatePointVector.z)) -
-					(dotProduct * dotProduct) / teatLengthSq;
+                     (validatePointVector.z * validatePointVector.z)) -
+                    (dotProduct * dotProduct) / teatLengthSq;
 
   // The point is outside of the radius bounds
   if (distanceSquared > teatRadiusSq_)
   {
-	inRadiusBounds = false;
+    inRadiusBounds = false;
   }
 }
 
-void SearchTeat::updateTeatVector(Vec3 &teatAxisVector, std::vector<int> teatPoints,
-								  pcl::PointCloud<PointT>::Ptr &cloud, PointT &teatStartPoint)
+void SearchTeat::updateTeatVector(Vec3 &teatAxisVector, std::vector<int> teatPointsIdx,
+                                  pcl::PointCloud<PointT>::Ptr &cloud, PointT &teatStartPoint)
 {
   int segments = 10;
+  int segmentcount = 0;
 
   std::vector<std::vector<int>> pointVector(segments);
 
@@ -338,47 +339,87 @@ void SearchTeat::updateTeatVector(Vec3 &teatAxisVector, std::vector<int> teatPoi
   float segmentLength = axisLength / segments;
 
   // push the points into the corresponding segments
-  for (size_t i = 0; i < teatPoints.size(); i++)
+  for (size_t i = 0; i < teatPointsIdx.size(); i++)
   {
-	for (size_t j = 0; j < segments; j++)
-	{
-	  if (cloud->points[teatPoints[i]].z > teatStartPoint.z + segmentLength * j &&
-		  cloud->points[teatPoints[i]].z < teatStartPoint.z + segmentLength * (j + 1))
-	  {
-		(pointVector[j]).push_back(teatPoints[i]);
-	  }
-	}
+    for (size_t j = 0; j < segments; j++)
+    {
+      if (cloud->points[teatPointsIdx[i]].z > teatStartPoint.z + segmentLength * j &&
+          cloud->points[teatPointsIdx[i]].z < teatStartPoint.z + segmentLength * (j + 1))
+      {
+        (pointVector[j]).push_back(teatPointsIdx[i]);
+      }
+    }
   }
+
+  std::vector<Vec3> midpoints;
+  std::vector<float> rMidpoints;
 
   // calculate the approximated midpoint for each segment
   for (size_t i = 0; i < segments; i++)
   {
-	if ((pointVector[i]).size() < 20)
-	  continue;
+    if ((pointVector[i]).size() < 20)
+      continue;
 
-	Eigen::MatrixXf A = Eigen::MatrixXf(3, (pointVector[i].size()));
-	Eigen::VectorXf b = Eigen::VectorXf((pointVector[i].size()));
+    Eigen::MatrixXf A = Eigen::MatrixXf((pointVector[i].size()), 3);
+    Eigen::VectorXf b = Eigen::VectorXf((pointVector[i].size()));
+    Eigen::VectorXf c = Eigen::VectorXf(3);
+    for (size_t j = 0; j < (pointVector[i]).size(); j++)
+    {
+      float a1 = -2 * (cloud->points[(pointVector[i])[j]].x);
+      float a2 = -2 * (cloud->points[(pointVector[i])[j]].y);
 
-	for (size_t j = 0; j < (pointVector[i]).size(); j++)
-	{
-	  float a1 = (-2 * (cloud->points[(pointVector[i])[j]].x));
-	  float a2 = (-2 * (cloud->points[(pointVector[i])[j]].y));
+      A(j, 0) = a1;
+      A(j, 1) = a2;
+      A(j, 2) = 1;
 
-	  A(0, j) = a1;
-	  A(1, j) = a2;
-	  A(2, j) = 1;
-
-	  // -(x.^2 + y.^2)
-	  b(j) = (-((cloud->points[(pointVector[i])[j]].x) * (cloud->points[(pointVector[i])[j]].x) +
-				(cloud->points[(pointVector[i])[j]].y) * (cloud->points[(pointVector[i])[j]].y)));
-	}
-	std::cout << "The A matrix:\n" << A << std::endl;
-	std::cout << "The b vector:\n" << b << std::endl;
-	ROS_INFO("B");
-	Eigen::VectorXf a = A.colPivHouseholderQr().solve(b);
+      // -(x.^2 + y.^2)
+      float xSquared = (cloud->points[(pointVector[i])[j]].x) * (cloud->points[(pointVector[i])[j]].x);
+      float ySquared = (cloud->points[(pointVector[i])[j]].y) * (cloud->points[(pointVector[i])[j]].y);
+      b(j) = -(xSquared + ySquared);
+    }
+    // c(0) = x, c(1) = y, c(2) = x^2+y^2-c(2) = r^2
+    c = A.colPivHouseholderQr().solve(b);
+    Vec3 temp;
+    /*
+    temp.x = c(0);
+    temp.y = c(1);
+    temp.z = teatStartPoint.z + (segmentLength * (1 + 2 * i)) / 2;
+    midpoints.push_back(temp);
+    rMidpoints.push_back(sqrt((c(0) * c(0)) + (c(1) * c(1)) - c(3)));*/
+    std::cout << "Midpoint x: " << c(0) << std::endl << "Midpoint y: " << c(1) << std::endl;
+    segmentcount++;
   }
+  /*if ( 0)
+    lineFit(midpoints);*/
 
   return;
+}
+
+void SearchTeat::lineFit(std::vector<Vec3> &vec)
+{
+  Eigen::MatrixXf A = Eigen::MatrixXf(3, (vec.size()));
+  for (size_t i = 0; i < vec.size(); i++)
+  {
+    A(0, i) = 1;
+    A(1, i) = (vec[i]).x;
+    A(2, i) = (vec[i]).y;
+  }
+  std::cout << "The line matrix A: \n" << A << std::endl;
+  /*
+  // copy coordinates to  matrix in Eigen format
+  size_t num_atoms = c.size();
+  Eigen::Matrix<Vector3::Scalar, Eigen::Dynamic, Eigen::Dynamic> centers(num_atoms, 3);
+  for (size_t i = 0; i < num_atoms; ++i)
+    centers.row(i) = c[i];
+
+  Vector3 origin = centers.colwise().mean();
+  Eigen::MatrixXd centered = centers.rowwise() - origin.transpose();
+  Eigen::MatrixXd cov = centered.adjoint() * centered;
+  Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(cov);
+  Vector3 axis = eig.eigenvectors().col(2).normalized();
+
+  return std::make_pair(origin, axis);
+  */
 }
 /*
 bool SearchTeat::isTeat(int indexPoint, pcl::PointCloud<PointT>::Ptr &cloud)
@@ -419,46 +460,46 @@ bool SearchTeat::isTeat(int indexPoint, pcl::PointCloud<PointT>::Ptr &cloud)
   // Search for neigbhour points
   if (kdtree.nearestKSearch(startP, K, pointIdxSearch, pointIdxSqDistance) > 0)
   {
-	for (size_t i = 0; i < pointIdxSearch.size(); i++)
-	{
-	  // Init searchpoint
-	  searchP.x = cloud->points[pointIdxSearch[i]].x;
-	  searchP.y = cloud->points[pointIdxSearch[i]].y;
-	  searchP.z = cloud->points[pointIdxSearch[i]].z;
+  for (size_t i = 0; i < pointIdxSearch.size(); i++)
+  {
+    // Init searchpoint
+    searchP.x = cloud->points[pointIdxSearch[i]].x;
+    searchP.y = cloud->points[pointIdxSearch[i]].y;
+    searchP.z = cloud->points[pointIdxSearch[i]].z;
 
-	  // Vector startpoint to searchpoint
-	  searchPVec.x = searchP.x - startP.x;
-	  searchPVec.y = searchP.y - startP.y;
-	  searchPVec.z = searchP.z - startP.z;
+    // Vector startpoint to searchpoint
+    searchPVec.x = searchP.x - startP.x;
+    searchPVec.y = searchP.y - startP.y;
+    searchPVec.z = searchP.z - startP.z;
 
-	  // Dot Product between
-	  dot = (searchPVec.x * teatAxisVector.x) + (searchPVec.y *
+    // Dot Product between
+    dot = (searchPVec.x * teatAxisVector.x) + (searchPVec.y *
 teatAxisVector.y) + (searchPVec.z * teatAxisVector.z);
 
-	  // if dot product is larger than zero and smaller than the squared
-	  // teatLength the point is between the lowest teat point and the end
-	  // of the defined cylinder
-	  if (dot < 0 || dot > teatLengthSq)
-	  {
-		// Point is not inside of start & end bounds
-		isteat = false;
-		return isteat;
-	  }
-	  else
-	  {
-		// Point is inside of Bounds
-		dSq = (searchPVec.x * searchPVec.x + searchPVec.y * searchPVec.y +
+    // if dot product is larger than zero and smaller than the squared
+    // teatLength the point is between the lowest teat point and the end
+    // of the defined cylinder
+    if (dot < 0 || dot > teatLengthSq)
+    {
+    // Point is not inside of start & end bounds
+    isteat = false;
+    return isteat;
+    }
+    else
+    {
+    // Point is inside of Bounds
+    dSq = (searchPVec.x * searchPVec.x + searchPVec.y * searchPVec.y +
 searchPVec.z * searchPVec.z) -
-			  (dot * dot) / teatLengthSq;
-		if (dSq > teatRadiusSq)
-		{
-		  isteat = false;
-		  return isteat;
-		}
-	  }
-	}
-	isteat = true;
-	return isteat;
+        (dot * dot) / teatLengthSq;
+    if (dSq > teatRadiusSq)
+    {
+      isteat = false;
+      return isteat;
+    }
+    }
+  }
+  isteat = true;
+  return isteat;
   }
 }
 */
@@ -476,10 +517,10 @@ int main(int argc, char **argv)
   ROS_INFO("SearchTeatNode is up");
   while (ros::ok())
   {
-	ros::spinOnce();
-	searchTeat.Searchloop();
-	searchTeat.spinViewer();
-	loop_rate.sleep();
+    ros::spinOnce();
+    searchTeat.Searchloop();
+    searchTeat.spinViewer();
+    loop_rate.sleep();
   }
 
   return 0;

@@ -97,10 +97,12 @@ private:
   bool segmentation(int seedIdxPoint, pcl::PointCloud<PointT>::Ptr &cloud);
 
   void validatePoint(int validatePointIdx, Vec3 &teatAxisVector, PointT &teatStartPoint,
-					 pcl::PointCloud<PointT>::Ptr &cloud, bool &inheightbounds, bool &inradiusbounds);
+                     pcl::PointCloud<PointT>::Ptr &cloud, bool &inheightbounds, bool &inradiusbounds);
 
   void updateTeatVector(Vec3 &teatAxisVector, std::vector<int> teatPoints, pcl::PointCloud<PointT>::Ptr &cloud,
-						PointT &teatStartPoint);
+                        PointT &teatStartPoint);
+                        
+  void lineFit(std::vector<Vec3> &c);
 
   /**
    * @brief Publishes the Tip position of all 4 teats
