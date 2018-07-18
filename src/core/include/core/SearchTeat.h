@@ -25,8 +25,9 @@
 #include <pcl/point_types.h>
 #include <pcl/visualization/cloud_viewer.h>
 #include <pcl_conversions/pcl_conversions.h>
-#include <fstream>
 #include <iostream>
+#include <cmath>
+#include <vector>
 
 #include <Eigen/Core>
 
@@ -93,7 +94,7 @@ private:
   void initializePublishers();
   void initializeServices();
 
-  bool checkIfTeat(int seedIdxPoint);
+  bool checkIfTeat(PointT initialSeed);
 
   void validatePoint(int validatePointIdx, PointT &teatStartPoint, bool &inheightbounds, bool &inradiusbounds);
 
@@ -104,7 +105,7 @@ private:
 
   PointT calcMidpoint(PointT startPoint, int segments, std::vector<int> &idxVector);
 
-  void lineFit(std::vector<PointT> &vec);
+  void updateTeatAxis(std::vector<PointT> &vec);
 
   /**
    * @brief Publishes the Tip position of all 4 teats
@@ -120,7 +121,7 @@ private:
    * @param cloud The input cloud (pcl::PointCloud<PointT>)
    * @return std::vector<int> The indexpoints for the minimal points
    */
-  std::vector<int> getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud);
+std::vector<PointT> getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud);
 
   /**
    * @brief Gets called everytime there is a new cloud published
@@ -152,8 +153,10 @@ private:
 #ifdef enable_visualizer_
   boost::shared_ptr<pcl::visualization::PCLVisualizer> createViewer(std::string name);
   boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
-  void updateCloud(std::vector<int> teatCandidates, pcl::PointCloud<PointT>::Ptr &cloud);
-  void addPoint(PointT &point, std::string name);
+  void updateCloud(pcl::PointCloud<PointT>::Ptr &cloud);
+  void addPoint(PointT &point, std::string name, int r, int g, int b, float size);
+  void addPointVec(std::vector<int> teatCandidates, int r, int g, int b, float size);
+  void addPointVec(std::vector<PointT> points, int r, int g, int b, float size);
 
 public:
   void spinViewer();
