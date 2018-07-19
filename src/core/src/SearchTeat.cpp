@@ -203,7 +203,6 @@ std::vector<PointT> SearchTeat::getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud
       float zDist = fabs(search[i].z - search[j].z);
       float distance = sqrt((xDist * xDist) + (yDist * yDist) + (zDist * zDist));
 
-      if (distance < distanceThreshold)
       {
         pointSum.x += search[j].x;
         pointSum.y += search[j].y;
@@ -276,7 +275,7 @@ bool SearchTeat::checkIfTeat(PointT initialSeed)
         validatePoint(neighbourIdx[j], initialSeed, inHeightBounds, inRadiusBounds);
 
         // If a point is not inside the cylinder
-        // it's defenetly not a teat
+        // it's definitely not a teat
         if (!inRadiusBounds)
         {
           return false;
