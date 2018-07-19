@@ -188,7 +188,7 @@ std::vector<PointT> SearchTeat::getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud
   {
     search.push_back(cloud->points[teatCandidates[i]]);
   }
-  float distanceTreshold = 0.007;
+  float distanceThreshold = 0.007;
   PointT searchPoint;
   // for every teatcandidate
   for (size_t i = 0; i < search.size(); i++)
@@ -203,7 +203,7 @@ std::vector<PointT> SearchTeat::getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud
       float zDist = fabs(search[i].z - search[j].z);
       float distance = sqrt((xDist * xDist) + (yDist * yDist) + (zDist * zDist));
 
-      if (distance < distanceTreshold)
+      if (distance < distanceThreshold)
       {
         pointSum.x += search[j].x;
         pointSum.y += search[j].y;
