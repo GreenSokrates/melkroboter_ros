@@ -61,25 +61,26 @@ void RotateCloud::cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
 void RotateCloud::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg)
 {
 	sensor_msgs::PointCloud2 output;
-	sensor_msgs::PointCloud2 mid;
+	sensor_msgs::PointCloud2 transformed;
 	pcl::PCLPointCloud2::Ptr pclCloud(new pcl::PCLPointCloud2());
 	pcl::PCLPointCloud2::Ptr cloud_filtered(new pcl::PCLPointCloud2());
 
+	// Wait if transform is not ready
 	listener->waitForTransform("/world", (*cloud_msg).header.frame_id,
 							   (*cloud_msg).header.stamp, ros::Duration(5.0));
 
-	pcl_ros::transformPointCloud("/world", *cloud_msg, mid, *listener);
+	pcl_ros::transformPointCloud("/world", *cloud_msg, transformed, *listener);
 
-	pcl_conversions::toPCL(mid, *pclCloud);
+	pcl_conversions::toPCL(transformed, *pclCloud);
 
 	/*std::cerr << "PointCloud before filtering: "
 			  << pclCloud->width * pclCloud->height << " data points ("
 			  << pcl::getFieldsList(*pclCloud) << ")." << std::endl;
 */
-	pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
-	sor.setInputCloud(pclCloud);
-	sor.setLeafSize(0.0025, 0.0025, 0.0025);
-	sor.filter(*cloud_filtered);
+	pcl::VoxelGrid<pcl::PCLPointCloud2> vxl;
+	vxl.setInputCloud(pclCloud);
+	vxl.setLeafSize(0.0025, 0.0025, 0.0025);
+	vxl.filter(*cloud_filtered);
 /*
 	std::cerr << "PointCloud after filtering: "
 			  << cloud_filtered->width * cloud_filtered->height
