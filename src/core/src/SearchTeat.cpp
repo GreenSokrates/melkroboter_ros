@@ -239,7 +239,6 @@ SearchTeat::getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud)
 	gridMin.filter(teatCandidates);
 
 #ifdef enable_visualizer_
-<<<<<<< HEAD
 	addPointVec(teatCandidates, 0, 100, 100, 0.002);
 #endif
 
@@ -282,53 +281,6 @@ SearchTeat::getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud)
 	addPointVec(definitiveCandidates, 0, 255, 0, 0.004);
 
 	return definitiveCandidates;
-=======
-  addPointVec(teatCandidates, 255, 0, 0, 0.002);
-#endif
-
-  std::vector<PointT> search;
-  std::vector<PointT> resultPoints;
-  for (size_t i = 0; i < teatCandidates.size(); i++)
-  {
-    search.push_back(cloud->points[teatCandidates[i]]);
-  }
-  float distanceThreshold = 0.007;
-  PointT searchPoint;
-  // for every teatcandidate
-  for (size_t i = 0; i < search.size(); i++)
-  {
-    PointT pointSum = search[i];
-    int sumcount = 1;
-    // check if there is a near candidate and remove it
-    for (size_t j = i + 1; j < search.size(); j++)
-    {
-      float xDist = fabs(search[i].x - search[j].x);
-      float yDist = fabs(search[i].y - search[j].y);
-      float zDist = fabs(search[i].z - search[j].z);
-      float distance = sqrt((xDist * xDist) + (yDist * yDist));
-
-      {
-        pointSum.x += search[j].x;
-        pointSum.y += search[j].y;
-        if (search[j].z < pointSum.z)
-        {
-          pointSum.z = search[j].z;
-        }
-        // pointSum.z += search[j].z;
-        search.erase(search.begin() + j);
-        sumcount++;
-      }
-    }
-    pointSum.x /= sumcount;
-    pointSum.y /= sumcount;
-    // pointSum.z /= sumcount;
-    resultPoints.push_back(pointSum);
-  }
-
-  addPointVec(resultPoints, 0, 0, 255, 0.002);
-
-  return resultPoints;
->>>>>>> 176c6380be125c1d2fc3bde339a198ff31621575
 }
 
 bool SearchTeat::checkIfTeat(PointT initialSeed)
