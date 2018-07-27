@@ -16,8 +16,16 @@ SearchTeat::SearchTeat(ros::NodeHandle *nodehandle, float gridSize,
 	cloud_freezed_.reset(new pcl::PointCloud<PointT>());
 
 #ifdef enable_visualizer_
+<<<<<<< HEAD
 	viewer = createViewer("Cloud");
 	viewer->addCoordinateSystem(0.1, "original", 0);
+=======
+  viewer = createViewer("Cloud");
+  viewer->setBackgroundColor(0, 0, 0);
+  viewer->addCoordinateSystem(0.1, "original", 0);
+  viewer->setRepresentationToWireframeForAllActors();
+
+>>>>>>> 176c6380be125c1d2fc3bde339a198ff31621575
 #endif
 }
 
@@ -85,6 +93,7 @@ void SearchTeat::Searchloop()
 	updateCloud(cloud_freezed_);
 #endif
 
+<<<<<<< HEAD
 	// Search POI (minimas)
 	teatCandidates = getMinPoints(cloud_freezed_);
 
@@ -123,6 +132,46 @@ void SearchTeat::Searchloop()
 	// Publish the teats only if more than 3 found
 	if (teatCount > 2)
 		publishTeats(cloud_freezed_);
+=======
+  // Search POI (minimas)
+  teatCandidates = getMinPoints(cloud_freezed_);
+
+  // goes through all possible teat candidates if one is a teat the
+  // coordinates of the tip get pushed back into the vectors
+  // and the teatCount gets incremented
+  for (size_t i = 0; i < teatCandidates.size(); i++)
+  {
+    if (checkIfTeat(teatCandidates[i]))
+    {
+      teatCount_new++;
+      xVector_new.push_back(teatCandidates[i].x);
+      yVector_new.push_back(teatCandidates[i].y);
+      zVector_new.push_back(teatCandidates[i].z);
+      // addPoint(teatCandidates[i], "teat %lu" + i, 0, 0, 255, 0.008);
+    }
+  }
+  // Replace the old teat vectors with the new ones
+  xVector = xVector_new;
+  yVector = yVector_new;
+  zVector = zVector_new;
+  // Replace the counter for the teats
+  teatCount = teatCount_new;
+
+  double duration = ros::Time::now().toSec() - startTime;
+  if (teatCount > 4)
+  {
+    ROS_ERROR("Found more than 4 teats!");
+    /*     std::cout << "xVector: " << xVector << "\n";
+        std::cout << "yVector: " << yVector << "\n";
+        std::cout << "zVector: " << zVector << "\n"; */
+    viewer->spin();
+  }
+  // ROS_INFO("Found %i Teats in %f Seconds", teatCount, duration);
+
+  // Publish the teats only if more than 3 found
+  if (teatCount > 2)
+    publishTeats(cloud_freezed_);
+>>>>>>> 176c6380be125c1d2fc3bde339a198ff31621575
 }
 
 void SearchTeat::publishTeats(pcl::PointCloud<PointT>::Ptr &cloud)
@@ -190,6 +239,7 @@ SearchTeat::getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud)
 	gridMin.filter(teatCandidates);
 
 #ifdef enable_visualizer_
+<<<<<<< HEAD
 	addPointVec(teatCandidates, 0, 100, 100, 0.002);
 #endif
 
@@ -232,6 +282,53 @@ SearchTeat::getMinPoints(pcl::PointCloud<PointT>::Ptr &cloud)
 	addPointVec(definitiveCandidates, 0, 255, 0, 0.004);
 
 	return definitiveCandidates;
+=======
+  addPointVec(teatCandidates, 255, 0, 0, 0.002);
+#endif
+
+  std::vector<PointT> search;
+  std::vector<PointT> resultPoints;
+  for (size_t i = 0; i < teatCandidates.size(); i++)
+  {
+    search.push_back(cloud->points[teatCandidates[i]]);
+  }
+  float distanceThreshold = 0.007;
+  PointT searchPoint;
+  // for every teatcandidate
+  for (size_t i = 0; i < search.size(); i++)
+  {
+    PointT pointSum = search[i];
+    int sumcount = 1;
+    // check if there is a near candidate and remove it
+    for (size_t j = i + 1; j < search.size(); j++)
+    {
+      float xDist = fabs(search[i].x - search[j].x);
+      float yDist = fabs(search[i].y - search[j].y);
+      float zDist = fabs(search[i].z - search[j].z);
+      float distance = sqrt((xDist * xDist) + (yDist * yDist));
+
+      {
+        pointSum.x += search[j].x;
+        pointSum.y += search[j].y;
+        if (search[j].z < pointSum.z)
+        {
+          pointSum.z = search[j].z;
+        }
+        // pointSum.z += search[j].z;
+        search.erase(search.begin() + j);
+        sumcount++;
+      }
+    }
+    pointSum.x /= sumcount;
+    pointSum.y /= sumcount;
+    // pointSum.z /= sumcount;
+    resultPoints.push_back(pointSum);
+  }
+
+  addPointVec(resultPoints, 0, 0, 255, 0.002);
+
+  return resultPoints;
+>>>>>>> 176c6380be125c1d2fc3bde339a198ff31621575
 }
 
 bool SearchTeat::checkIfTeat(PointT initialSeed)
@@ -486,9 +583,20 @@ SearchTeat::createViewer(std::string name)
 
 void SearchTeat::updateCloud(pcl::PointCloud<PointT>::Ptr &cloud)
 {
+<<<<<<< HEAD
 	viewer->removeAllShapes();
 	viewer->removeAllPointClouds();
 	viewer->addPointCloud(cloud, "cloud");
+=======
+  pcl::visualization::PointCloudColorHandlerCustom<PointT> originalColor(cloud, 0, 0, 0);
+
+  viewer->removeAllShapes();
+  viewer->removeAllPointClouds();
+  viewer->setBackgroundColor(255, 255, 255);
+
+  viewer->addPointCloud(cloud, originalColor, "cloud");
+  viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "cloud");
+>>>>>>> 176c6380be125c1d2fc3bde339a198ff31621575
 }
 
 void SearchTeat::addPointVec(std::vector<int> teatCandidates, int r, int g,

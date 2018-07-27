@@ -7,25 +7,23 @@
  */
 #include <core/RotateCloud.h>
 
-RotateCloud::RotateCloud(ros::NodeHandle *nodehandle, std::string in,
-						 std::string out)
-	: nh_(*nodehandle)
+RotateCloud::RotateCloud(ros::NodeHandle *nodehandle, std::string in, std::string out) : nh_(*nodehandle)
 {
-	listener = new tf::TransformListener();
-	initializeSubscribers(in);
-	initializePublishers(out);
+  listener = new tf::TransformListener();
+  initializeSubscribers(in);
+  initializePublishers(out);
 }
 
 void RotateCloud::initializeSubscribers(std::string in)
 {
-	sub_ = nh_.subscribe(in, 1, &RotateCloud::RotateCloud::cloud_cb_, this);
-	ROS_INFO("Subscribing to: %s ", in.c_str());
+  sub_ = nh_.subscribe(in, 1, &RotateCloud::RotateCloud::cloud_cb_, this);
+  ROS_INFO("Subscribing to: %s ", in.c_str());
 }
 
 void RotateCloud::initializePublishers(std::string out)
 {
-	pub_ = nh_.advertise<sensor_msgs::PointCloud2>(out, 1);
-	ROS_INFO("Publishing on: %s", out.c_str());
+  pub_ = nh_.advertise<sensor_msgs::PointCloud2>(out, 1);
+  ROS_INFO("Publishing on: %s", out.c_str());
 }
 
 /*
@@ -94,25 +92,25 @@ void RotateCloud::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg)
 
 int main(int argc, char **argv)
 {
-	ros::init(argc, argv, "RotateNode");
-	ros::NodeHandle nh;
+  ros::init(argc, argv, "RotateNode");
+  ros::NodeHandle nh;
 
-	std::string in;
-	std::string out;
-	std::string nodename = ros::this_node::getName();
+  std::string in;
+  std::string out;
+  std::string nodename = ros::this_node::getName();
 
-	nh.getParam(nodename + "/input", in);
-	nh.getParam(nodename + "/output", out);
+  nh.getParam(nodename + "/input", in);
+  nh.getParam(nodename + "/output", out);
 
-	RotateCloud rotateCloud(&nh, in, out);
+  RotateCloud rotateCloud(&nh, in, out);
 
-	ros::Rate loop_rate(30); // Freq in Hz
-	ROS_INFO("RotateNode is up");
-	while (ros::ok())
-	{
-		ros::spinOnce();
-		loop_rate.sleep();
-	}
+  ros::Rate loop_rate(30);  // Freq in Hz
+  ROS_INFO("RotateNode is up");
+  while (ros::ok())
+  {
+	ros::spinOnce();
+	loop_rate.sleep();
+  }
 
-	return 0;
+  return 0;
 }

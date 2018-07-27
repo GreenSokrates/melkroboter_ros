@@ -4,7 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /MotionPlanning1
+        - /Status1
         - /MotionPlanning1/Planning Request1
         - /TF1/Frames1
         - /TF1/Tree1
@@ -24,7 +24,7 @@ Visualization Manager:
     - Alpha: 0.5
       Cell Size: 1
       Class: rviz/Grid
-      Color: 160; 160; 164
+      Color: 255; 255; 255
       Enabled: true
       Line Style:
         Line Width: 0.0299999993
@@ -328,7 +328,7 @@ Visualization Manager:
       Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
-      Size (Pixels): 1
+      Size (Pixels): 2
       Size (m): 0.00999999978
       Style: Points
       Topic: /cloud/RotatedFiltered
@@ -432,10 +432,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.474407494
+      Pitch: 0.0144074848
       Target Frame: world
       Value: XYOrbit (rviz)
-      Yaw: 4.09926033
+      Yaw: 2.95925617
     Saved: ~
 Window Geometry:
   Camera:
