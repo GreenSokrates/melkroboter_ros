@@ -7,25 +7,23 @@
  */
 #include <core/RotateCloud.h>
 
-RotateCloud::RotateCloud(ros::NodeHandle *nodehandle, std::string in,
-						 std::string out)
-	: nh_(*nodehandle)
+RotateCloud::RotateCloud(ros::NodeHandle *nodehandle, std::string in, std::string out) : nh_(*nodehandle)
 {
-	listener = new tf::TransformListener();
-	initializeSubscribers(in);
-	initializePublishers(out);
+  listener = new tf::TransformListener();
+  initializeSubscribers(in);
+  initializePublishers(out);
 }
 
 void RotateCloud::initializeSubscribers(std::string in)
 {
-	sub_ = nh_.subscribe(in, 1, &RotateCloud::RotateCloud::cloud_cb_, this);
-	ROS_INFO("Subscribing to: %s ", in.c_str());
+  sub_ = nh_.subscribe(in, 1, &RotateCloud::RotateCloud::cloud_cb_, this);
+  ROS_INFO("Subscribing to: %s ", in.c_str());
 }
 
 void RotateCloud::initializePublishers(std::string out)
 {
-	pub_ = nh_.advertise<sensor_msgs::PointCloud2>(out, 1);
-	ROS_INFO("Publishing on: %s", out.c_str());
+  pub_ = nh_.advertise<sensor_msgs::PointCloud2>(out, 1);
+  ROS_INFO("Publishing on: %s", out.c_str());
 }
 
 /*
@@ -60,58 +58,58 @@ void RotateCloud::cloud_cb(const sensor_msgs::PointCloud2ConstPtr &cloud_msg) {
 
 void RotateCloud::cloud_cb_(const sensor_msgs::PointCloud2ConstPtr &cloud_msg)
 {
-	sensor_msgs::PointCloud2 output;
-	sensor_msgs::PointCloud2 mid;
-	pcl::PCLPointCloud2::Ptr pclCloud(new pcl::PCLPointCloud2());
-	pcl::PCLPointCloud2::Ptr cloud_filtered(new pcl::PCLPointCloud2());
+  sensor_msgs::PointCloud2 output;
+  sensor_msgs::PointCloud2 mid;
+  pcl::PCLPointCloud2::Ptr pclCloud(new pcl::PCLPointCloud2());
+  pcl::PCLPointCloud2::Ptr cloud_filtered(new pcl::PCLPointCloud2());
 
-	listener->waitForTransform("/world", (*cloud_msg).header.frame_id,
-							   (*cloud_msg).header.stamp, ros::Duration(5.0));
+  listener->waitForTransform("/world", (*cloud_msg).header.frame_id, (*cloud_msg).header.stamp, ros::Duration(5.0));
 
-	pcl_ros::transformPointCloud("/world", *cloud_msg, mid, *listener);
+  pcl_ros::transformPointCloud("/world", *cloud_msg, mid, *listener);
 
-	pcl_conversions::toPCL(mid, *pclCloud);
+  pcl_conversions::toPCL(mid, *pclCloud);
+  
+  std::cerr << "PointCloud before filtering: "
+			<< pclCloud->width * pclCloud->height << " data points ("
+			<< pcl::getFieldsList(*pclCloud) << ")." << std::endl;
 
-	/*std::cerr << "PointCloud before filtering: "
-			  << pclCloud->width * pclCloud->height << " data points ("
-			  << pcl::getFieldsList(*pclCloud) << ")." << std::endl;
-*/
-	pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
-	sor.setInputCloud(pclCloud);
-	sor.setLeafSize(0.0025, 0.0025, 0.0025);
-	sor.filter(*cloud_filtered);
-/*
-	std::cerr << "PointCloud after filtering: "
-			  << cloud_filtered->width * cloud_filtered->height
-			  << " data points (" << pcl::getFieldsList(*cloud_filtered) << ")."
-			  << std::endl;
-*/
-	pcl_conversions::fromPCL(*cloud_filtered, output);
+  pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
+  sor.setInputCloud(pclCloud);
+  sor.setLeafSize(0.002, 0.002, 0.002);
+  sor.filter(*cloud_filtered);
 
-	pub_.publish(output);
+  
+	  std::cerr << "PointCloud after filtering: "
+				<< cloud_filtered->width * cloud_filtered->height
+				<< " data points (" << pcl::getFieldsList(*cloud_filtered) << ")."
+				<< std::endl;
+  
+  pcl_conversions::fromPCL(*cloud_filtered, output);
+
+  pub_.publish(output);
 }
 
 int main(int argc, char **argv)
 {
-	ros::init(argc, argv, "RotateNode");
-	ros::NodeHandle nh;
+  ros::init(argc, argv, "RotateNode");
+  ros::NodeHandle nh;
 
-	std::string in;
-	std::string out;
-	std::string nodename = ros::this_node::getName();
+  std::string in;
+  std::string out;
+  std::string nodename = ros::this_node::getName();
 
-	nh.getParam(nodename + "/input", in);
-	nh.getParam(nodename + "/output", out);
+  nh.getParam(nodename + "/input", in);
+  nh.getParam(nodename + "/output", out);
 
-	RotateCloud rotateCloud(&nh, in, out);
+  RotateCloud rotateCloud(&nh, in, out);
 
-	ros::Rate loop_rate(30); // Freq in Hz
-	ROS_INFO("RotateNode is up");
-	while (ros::ok())
-	{
-		ros::spinOnce();
-		loop_rate.sleep();
-	}
+  ros::Rate loop_rate(30);  // Freq in Hz
+  ROS_INFO("RotateNode is up");
+  while (ros::ok())
+  {
+	ros::spinOnce();
+	loop_rate.sleep();
+  }
 
-	return 0;
+  return 0;
 }
