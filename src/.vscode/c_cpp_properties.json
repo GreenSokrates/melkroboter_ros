@@ -16,7 +16,8 @@
                 "/usr/include/pcl-1.7",
                 "/usr/include/eigen3",
                 "/usr/include/vtk-6.2",
-                "/usr/include/vtk-6.2"
+                "/usr/include/vtk-6.2",
+                "${workspaceFolder}/core/include"
             ],
             "name": "Linux",
             "intelliSenseMode": "clang-x64",

@@ -27,5 +27,5 @@
         "core": "cpp",
         "numericaldiff": "cpp"
     },
-    "C_Cpp.clang_format_fallbackStyle": "file"
+
 }
